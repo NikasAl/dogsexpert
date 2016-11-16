@@ -1,26 +1,18 @@
 package ru.electronikas.dogexpert.parser;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
-import ru.electronikas.nstarikov.model.ArticleRef;
-import ru.electronikas.nstarikov.ssl.CustomHttpClient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DogsHtmlParser {
     public static final int TIMEOUT = 30000;
-    public final String BEGIN_URL_PART = "http://nstarikov.ru/blog";
+    public final String BEGIN_URL_PART = "http://www.zoopicture.ru";
 
     private final String BROWSER_INFO = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 
@@ -33,12 +25,12 @@ public class DogsHtmlParser {
         System.setProperty("http.agent", BROWSER_INFO);
     }
 
-    public List<ArticleRef> getNewsByPage(String page) throws IOException {
-        return getNews(BEGIN_URL_PART + "/page/" + page);
+    public List<BreedRef> getNewsByPage(String page) throws IOException {
+        return getBreedLinks(BEGIN_URL_PART + "/porody-sobak/" + page);
     }
 
-    public List<ArticleRef> getLastNews() throws IOException {
-        return getNews(BEGIN_URL_PART);
+    public List<BreedRef> getBreeds() throws IOException {
+        return getBreedLinks(BEGIN_URL_PART + "/porody-sobak");
     }
 
     public String getArticleHtml(String allPageHtml) throws IOException {
@@ -63,33 +55,23 @@ public class DogsHtmlParser {
         return article;
     }
 
-
-
-    private List<ArticleRef> getNews(String urlStr) throws IOException {
-        String htmlNewsList = getContentFromUrl(urlStr);
-
-        return getArticleRefsByHtmlString(htmlNewsList);
-    }
-
-    private List<ArticleRef> getArticleRefsByHtmlString(String htmlStr) throws IOException {
-        List<ArticleRef> artRefList = new ArrayList<ArticleRef>();
+    private List<BreedRef> getBreedLinks(String urlStr) throws IOException {
+        List<BreedRef> artRefList = new ArrayList<BreedRef>();
         try {
-            TagNode node = cleaner.clean(htmlStr);
-            TagNode tnode = (TagNode) node.evaluateXPath("//*[@id=\"content\"]/div[1]")[0];
-//            TagNode tnode = node.findElementByName("article", true);
+            TagNode node = cleaner.clean(new URL(urlStr));
+//            TagNode tnode = (TagNode) node.evaluateXPath("//article/div[1]/div/div[1]")[0];
+            List<TagNode> tagNodes = (List<TagNode>)node.getElementListByAttValue("class", "span2", true, true);
+//            for (TagNode tn : tnode.getChildTags()) {
+            for (TagNode tn : tagNodes) {
+                BreedRef breed = new BreedRef();
+                if(tn.evaluateXPath("//a").length == 0) continue;
+                String link = ((TagNode) tn.evaluateXPath("//a")[0]).getAttributeByName("href");
+                if(!link.contains("zoopicture.ru")) continue;
+                breed.link = link;
+                breed.identity = link.split("/")[3];
 
-            //List<TagNode> tagNodes = node.getElementListByAttValue("class", "post wrap",true,true);
-            for (TagNode tn : tnode.getChildTags()) {
-                if (!tn.getName().equals("article")) continue;
-                ArticleRef ar = new ArticleRef();
-                ar.txtDate = ((TagNode) tn.evaluateXPath("//header")[0]).getText().toString();
-                //((TagNode)tn.evaluateXPath("//div[1]/h3/span[1]")[0]).getText().toString();
-                ar.length = "";
-                ar.link = ((TagNode) tn.evaluateXPath("//a")[0]).getAttributeByName("href");
-                ar.name = ((TagNode) tn.evaluateXPath("//a")[0]).getText().toString().replaceAll("&nbsp;", "").replaceAll("&mdash;", "").replaceAll("&laquo;","\"").replaceAll("&raquo;","\"");
-                ar.author = "";//((TagNode)tn.evaluateXPath("//div[1]/h4[1]/a")[0]).getText().toString();
-
-                artRefList.add(ar);
+                artRefList.add(breed);
+                System.out.println("link added: " + breed.link);
             }
         } catch (XPatherException e) {
             e.printStackTrace();
@@ -127,102 +109,26 @@ public class DogsHtmlParser {
         }
     }
 
-/*
-
-    public ArrayList<ArticleRef> fetchNewsList() throws IOException, FeedException {
-        ArrayList<ArticleRef> messages = new ArrayList<ArticleRef>();
-        URL feedUrl = new URL("http://feeds.feedburner.com/nstarikov?format=xml");
-        SyndFeedInput input = new SyndFeedInput();
-        SyndFeed feed = input.build(new InputStreamReader(feedUrl.openStream()));
-//        feed.setEncoding("UTF-8");
-        for (Object entry : feed.getEntries()) {
-            ArticleRef articleRef = new ArticleRef();
-
-            articleRef.author = ((SyndEntry) entry).getAuthor();
-            articleRef.description = ((SyndEntry) entry).getDescription().getValue();
-            articleRef.link = ((SyndEntry) entry).getLink();
-            articleRef.name = ((SyndEntry) entry).getTitle();
-            articleRef.txtDate = ((SyndEntry) entry).getPublishedDate().toString();
-//            articleRef.content = getArticleContentFromUrl(articleRef.link);
-//                SyndContentImpl rrr = ((SyndContentImpl)((SyndEntry)entry).getContents().get(0));//((SyndEntry)entry).getContents().get(0);
-//                articleRef.content = rrr.getValue();
-//            System.out.println(((SyndEntry) entry).getContents().size());
-
-            messages.add(articleRef);
-        }
-        return messages;
-    }
-*/
-
-    public String getArticleContentFromUrl(String url) {
-        String resString;
-        try {
-            resString = getArticleHtml(getContentFromUrl(url));
-        } catch (IOException e) {
-            throw new RuntimeException("parser Error");
-        }
-        return resString;
-    }
-
-    public String getContentFromUrl(String url) {
-        if(cook==null) authorize();
-        String resString = null;
-        resString = getHttpSourceFromUrl(url, cook);
-        return resString;
-    }
-
-    String cook = null;
-
-
-    HttpClient httpclient = new CustomHttpClient(); // Create HTTP Client
-
-    private String getHttpSourceFromUrl(String url, String cookie) {
-        HttpGet httpget = new HttpGet(url); // Set the action you want to do
-        if(cookie!=null)
-            httpget.addHeader("Cookie", cookie);
-//        httpget.addHeader("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.2.1; ru-ru; A9500 Build/JOP40D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30");
-        httpget.addHeader("User-Agent", BROWSER_INFO);
-        HttpResponse response = null; // Executeit
-        String resString = null;
-        try {
-            response = httpclient.execute(httpget);
-            HttpEntity entity = response.getEntity();
-            InputStream is = entity.getContent(); // Create an InputStream with the response
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) // Read line by line
-                sb.append(line + "\n");
-
-            resString = sb.toString(); // Result is here
-
-            is.close(); // Close the stream
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return resString;
-    }
-
-
-    public void authorize() {
-        String html = getHttpSourceFromUrl("https://nstarikov.ru", null);
-        if(html==null) return;
-        int begin = html.indexOf("_ddn_intercept_2");
-        if(begin==-1) {
-            cook = "mobile1=123;";
-            return;
-        }
-        int end = html.indexOf(";", begin);
-        cook = html.substring(begin, end+1);
-    }
-
     public static void main(String[] args) throws IOException {
 
-        NStarikovHtmlParser parser = new NStarikovHtmlParser();
-//        String art = parser.getArticleContentFromUrl("https://nstarikov.ru/blog/71082");
-        List<ArticleRef> articleRefs = parser.getLastNews();
-        System.out.print(articleRefs);
+        DogsHtmlParser parser = new DogsHtmlParser();
+        List<BreedRef> breedRefs = parser.getBreeds();
+        parser.feelBreeds(breedRefs);
+        saveBreeds(breedRefs);
+
+        System.out.print(breedRefs);
+    }
+
+    private static void saveBreeds(List<BreedRef> breedRefs) throws IOException {
+        for(BreedRef breed : breedRefs) {
+            breed.save();
+        }
+    }
+
+    private void feelBreeds(List<BreedRef> breedRefs) {
+        for (BreedRef breed : breedRefs) {
+            breed.feel(cleaner);
+        }
     }
 
 }

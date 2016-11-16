@@ -104,6 +104,7 @@ project(":trainer") {
 
     dependencies {
         compile "org.encog:encog-core:$encogVersion"
+        compile "net.sourceforge.htmlcleaner:htmlcleaner:2.14"
     }
 }
 
