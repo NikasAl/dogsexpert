@@ -30,6 +30,7 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.strategy.ResetStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.platformspecific.j2se.TrainingDialog;
 import org.encog.platformspecific.j2se.data.image.ImageMLData;
 import org.encog.platformspecific.j2se.data.image.ImageMLDataSet;
@@ -147,8 +148,16 @@ public class ImageNeuralNetwork {
 			processNetwork();
 		} else if (command.equals("whatis")) {
 			processWhatIs();
+		} else if (command.equals("savenet")) {
+			processSaveNet();
 		}
 
+	}
+
+	private void processSaveNet() {
+		String fileName = getArg("file");
+		EncogDirectoryPersistence.saveObject(new File(fileName), network);
+//		BasicNetwork network = (BasicNetwork)EncogDirectoryPersistence.loadObject(new File(FILENAME));
 	}
 
 	public void executeLine() throws IOException {
