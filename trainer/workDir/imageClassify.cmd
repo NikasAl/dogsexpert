@@ -1,4 +1,4 @@
-CreateTraining: width:20,height:20,type:RGB
+CreateTraining: width:10,height:10,type:RGB
 Input: image:./akita-inu/0.jpg, identity:akita-inu
 Input: image:./akita-inu/1.jpg, identity:akita-inu
 Input: image:./akita-inu/2.jpg, identity:akita-inu
@@ -692,8 +692,10 @@ Input: image:./yaponskij-xin/5.jpg, identity:yaponskij-xin
 Input: image:./yaponskij-xin/6.jpg, identity:yaponskij-xin
 Input: image:./yaponskij-xin/7.jpg, identity:yaponskij-xin
 Input: image:./yaponskij-xin/8.jpg, identity:yaponskij-xin
-Network: hidden1:100, hidden2:10
-Train: Mode:gui, Minutes:1, StrategyError:0.5, StrategyCycles:300
+Network: hidden1:70, hidden2:80, hidden3:0, hidden4:0, hidden5:0
+SaveTrainData: file: ./dogs.egb
+#SaveNet: file:./dogs.eg
+Train: Mode:gui, Minutes:1, StrategyError:0.5, StrategyCycles:150
 Whatis: image:./alyaskinskij-malamut/7.jpg
 Whatis: image:./alyaskinskij-malamut/6.jpg
 Whatis: image:./alyaskinskij-malamut/5.jpg
@@ -710,4 +712,4 @@ Whatis: image:./akita-inu/3.jpg
 Whatis: image:./akita-inu/2.jpg
 Whatis: image:./akita-inu/1.jpg
 Whatis: image:./akita-inu/0.jpg
-SaveNet: file:./experimental.eg
+SaveNet: file:./dogsAfterTrain.eg

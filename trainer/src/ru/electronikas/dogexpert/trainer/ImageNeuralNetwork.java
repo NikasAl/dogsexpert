@@ -25,11 +25,14 @@ package ru.electronikas.dogexpert.trainer;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.strategy.ResetStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.platformspecific.j2se.TrainingDialog;
 import org.encog.platformspecific.j2se.data.image.ImageMLData;
@@ -150,8 +153,15 @@ public class ImageNeuralNetwork {
 			processWhatIs();
 		} else if (command.equals("savenet")) {
 			processSaveNet();
+		} else if (command.equals("savetraindata")) {
+			saveTrainDataProcess();
 		}
 
+	}
+
+	private void saveTrainDataProcess() {
+		String fileName = getArg("file");
+		EncogUtility.saveEGB(new File(fileName), training);
 	}
 
 	private void processSaveNet() {
@@ -245,17 +255,62 @@ public class ImageNeuralNetwork {
 
 		final String strHidden1 = getArg("hidden1");
 		final String strHidden2 = getArg("hidden2");
+		final String strHidden3 = getArg("hidden3");
+		final String strHidden4 = getArg("hidden4");
+		final String strHidden5 = getArg("hidden5");
 
 		this.training.downsample(this.downsampleHeight, this.downsampleWidth);
 
 		final int hidden1 = Integer.parseInt(strHidden1);
 		final int hidden2 = Integer.parseInt(strHidden2);
+		final int hidden3 = Integer.parseInt(strHidden3);
+		final int hidden4 = Integer.parseInt(strHidden4);
+		final int hidden5 = Integer.parseInt(strHidden5);
 
-		this.network = EncogUtility.simpleFeedForward(this.training
-				.getInputSize(), hidden1, hidden2,
+		this.network = simpleFeedForward(this.training
+				.getInputSize(), hidden1, hidden2, hidden3, hidden4, hidden5,
 				this.training.getIdealSize(), true);
 		System.out.println("Created network: " + this.network.toString());
 	}
+
+	public static BasicNetwork simpleFeedForward(final int input,
+												 final int hidden1,
+												 final int hidden2,
+												 final int hidden3,
+												 final int hidden4,
+												 final int hidden5,
+												 final int output,
+												 final boolean tanh) {
+		final FeedForwardPattern pattern = new FeedForwardPattern();
+		pattern.setInputNeurons(input);
+		pattern.setOutputNeurons(output);
+		if (tanh) {
+			pattern.setActivationFunction(new ActivationTANH());
+		} else {
+			pattern.setActivationFunction(new ActivationSigmoid());
+		}
+
+		if (hidden1 > 0) {
+			pattern.addHiddenLayer(hidden1);
+		}
+		if (hidden2 > 0) {
+			pattern.addHiddenLayer(hidden2);
+		}
+		if (hidden3 > 0) {
+			pattern.addHiddenLayer(hidden3);
+		}
+		if (hidden4 > 0) {
+			pattern.addHiddenLayer(hidden5);
+		}
+		if (hidden5 > 0) {
+			pattern.addHiddenLayer(hidden5);
+		}
+
+		final BasicNetwork network = (BasicNetwork)pattern.generate();
+		network.reset();
+		return network;
+	}
+
 
 	private void processTrain() throws IOException {
 		final String strMode = getArg("mode");
