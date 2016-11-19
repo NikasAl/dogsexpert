@@ -4,6 +4,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.RenderedImage;
@@ -41,8 +42,7 @@ public class BreedRef {
                     if(imgTag==null) continue;
                     String picUrl = imgTag.getAttributeByName("src");
                     try {
-                        Image dogImg = ImageIO.read(new URL(picUrl));
-                        this.imgs.add(dogImg);
+                        addImg(picUrl);
                     } catch (IOException e) {
                     }
                 }
@@ -65,7 +65,7 @@ public class BreedRef {
     }
 
     private void saveImages(List<Image> imgs) throws IOException {
-        int count = 0;
+        int count = new File(identity).listFiles().length;
         for(Image dogImg : imgs) {
             String imgPath = identity + "/" + count++ + ".jpg";
             ImageIO.write((RenderedImage) dogImg, "jpg",new File(imgPath));
@@ -90,4 +90,17 @@ public class BreedRef {
         }
     }
 
+    public void addImg(String picUrl) throws IOException {
+        try {
+            Image dogImg = ImageIO.read(new URL(picUrl));
+            if(dogImg == null) {
+                System.out.println("dog image was null - skip it");
+                return;
+            }
+            this.imgs.add(dogImg);
+            System.out.println("dog image downloaded from: " + picUrl);
+        } catch (IIOException ex) {
+            System.out.println("can't download img from: " + picUrl);
+        }
+    }
 }

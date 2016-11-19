@@ -1,4 +1,4 @@
-dir:nyufaundlend
+catalog:nyufaundlend
 http://farm3.static.flickr.com/2395/1917490246_0b02fe088a.jpg
 http://farm3.static.flickr.com/2393/2068040355_f95c439f71.jpg
 http://farm2.static.flickr.com/1432/1185649034_36a70120f4.jpg

@@ -228,6 +228,10 @@ public class ImageNeuralNetwork {
 
 		final int idx = assignIdentity(identity);
 		final File file = new File(image);
+		if(!file.exists()) {
+			System.out.println("Does not exist input image:" + image);
+			return;
+		}
 
 		this.imageList.add(new ImagePair(file, idx));
 
