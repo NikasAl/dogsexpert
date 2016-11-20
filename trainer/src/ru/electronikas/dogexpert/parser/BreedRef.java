@@ -11,6 +11,7 @@ import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +69,12 @@ public class BreedRef {
         int count = new File(identity).listFiles().length;
         for(Image dogImg : imgs) {
             String imgPath = identity + "/" + count++ + ".jpg";
-            ImageIO.write((RenderedImage) dogImg, "jpg",new File(imgPath));
-            addClassifiedImgToTrainerProgram(imgPath, identity);
+            try {
+                ImageIO.write((RenderedImage) dogImg, "jpg", new File(imgPath));
+                addClassifiedImgToTrainerProgram(imgPath, identity);
+            } catch (IIOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -91,8 +96,14 @@ public class BreedRef {
     }
 
     public void addImg(String picUrl) throws IOException {
-        try {
-            Image dogImg = ImageIO.read(new URL(picUrl));
+        URLConnection con;
+        InputStream in = null;        try {
+            URL url = new URL(picUrl);
+            con = url.openConnection();
+            con.setConnectTimeout(10000);
+            con.setReadTimeout(10000);
+            in = con.getInputStream();
+            Image dogImg = ImageIO.read(in);
             if(dogImg == null) {
                 System.out.println("dog image was null - skip it");
                 return;
@@ -101,6 +112,21 @@ public class BreedRef {
             System.out.println("dog image downloaded from: " + picUrl);
         } catch (IIOException ex) {
             System.out.println("can't download img from: " + picUrl);
+        } catch (Exception ex) {
+            System.out.println("Exception: " +  ex.getClass().getCanonicalName() + " : " + ex.getMessage());
+        }
+        finally {
+            if(in != null) {
+                try {
+                    in.close();
+                } catch(IOException ex) {
+                    // handle close failure
+                }
+            }
+
+//            if(con != null) {
+//                con.disconnect();
+//            }
         }
     }
 }
