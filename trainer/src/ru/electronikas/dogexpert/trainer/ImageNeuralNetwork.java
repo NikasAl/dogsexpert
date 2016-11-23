@@ -28,6 +28,8 @@ import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.strategy.ResetStrategy;
 import org.encog.neural.networks.BasicNetwork;
@@ -45,6 +47,8 @@ import org.encog.util.simple.EncogUtility;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
@@ -155,6 +159,10 @@ public class ImageNeuralNetwork {
 			processSaveNet();
 		} else if (command.equals("savetraindata")) {
 			saveTrainDataProcess();
+		} else if (command.equals("loadtraindata")) {
+			loadTrainDataProcess();
+		} else if (command.equals("loadnet")) {
+			processLoadNet();
 		}
 
 	}
@@ -164,10 +172,24 @@ public class ImageNeuralNetwork {
 		EncogUtility.saveEGB(new File(fileName), training);
 	}
 
+	private void loadTrainDataProcess() {
+		String fileName = getArg("file");
+		MLDataSet training = EncogUtility.loadEGB2Memory(new File(fileName));
+		for(MLDataPair pair : training) {
+			this.training.add(pair);
+//			System.out.println(pair);
+		}
+	}
+
 	private void processSaveNet() {
 		String fileName = getArg("file");
 		EncogDirectoryPersistence.saveObject(new File(fileName), network);
 //		BasicNetwork network = (BasicNetwork)EncogDirectoryPersistence.loadObject(new File(FILENAME));
+	}
+
+	private void processLoadNet() {
+		String fileName = getArg("file");
+		this.network = (BasicNetwork)EncogDirectoryPersistence.loadObject(new File(fileName));
 	}
 
 	public void executeLine() throws IOException {
@@ -223,10 +245,14 @@ public class ImageNeuralNetwork {
 	}
 
 	private void processInput() throws IOException {
-		final String image = getArg("image");
+		String image = null;
+		try {
+			image = getArg("image");
+		} catch (EncogError ex) {}
 		final String identity = getArg("identity");
 
 		final int idx = assignIdentity(identity);
+		if(image == null) return;
 		final File file = new File(image);
 		if(!file.exists()) {
 			System.out.println("Does not exist input image:" + image);
@@ -329,7 +355,9 @@ public class ImageNeuralNetwork {
 		final int strategyCycles = Integer.parseInt(strStrategyCycles);
 
 		final ResilientPropagation train = new ResilientPropagation(this.network, this.training);
+//		final Backpropagation train = new Backpropagation(this.network, this.training);
 		train.addStrategy(new ResetStrategy(strategyError, strategyCycles));
+//		train.addStrategy(new EndMaxErrorStrategy(strategyError));//, strategyCycles));
 
 		if (strMode.equalsIgnoreCase("gui")) {
 			TrainingDialog.trainDialog(train, this.network, this.training);
@@ -337,10 +365,12 @@ public class ImageNeuralNetwork {
 			final int minutes = Integer.parseInt(strMinutes);
 			EncogUtility.trainConsole(train, this.network, this.training,
 					minutes);
+//			EncogUtility.trainToError(train, strategyError);
 		}
 		System.out.println("Training Stopped...");
 	}
 
+	NumberFormat nf = new DecimalFormat("0.000000#");
 	public void processWhatIs() throws IOException {
 		final String filename = getArg("image");
 		final File file = new File(filename);
@@ -348,8 +378,16 @@ public class ImageNeuralNetwork {
 		final ImageMLData input = new ImageMLData(img);
 		input.downsample(this.downsample, false, this.downsampleHeight,
 				this.downsampleWidth, 1, -1);
+
 		final int winner = this.network.winner(input);
 		System.out.println("What is: " + filename + ", it seems to be: "
 				+ this.neuron2identity.get(winner));
+
+//		MLData outData = network.compute(input);
+//		for (double speed : outData.getData()) {
+//			System.out.print(nf.format(speed) + ", ");
+//		}
+//		System.out.println();
+
 	}
 }

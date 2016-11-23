@@ -4324,10 +4324,10 @@ Input: image:./english-springer-spaniel/1006.jpg, identity:english-springer-span
 Input: image:./english-springer-spaniel/1007.jpg, identity:english-springer-spaniel
 Input: image:./english-springer-spaniel/1008.jpg, identity:english-springer-spaniel
 Input: image:./english-springer-spaniel/1009.jpg, identity:english-springer-spaniel
-Network: hidden1:120, hidden2:110, hidden3:0, hidden4:0, hidden5:0
-ExportForTrain: file: ./dogs.egb
+Network: hidden1:120, hidden2:100, hidden3:70, hidden4:0, hidden5:0
+SaveTrainData: file: ./dogs.egb
 #SaveNet: file:./dogs.eg
-Train: Mode:gui, Minutes:1, StrategyError:0.5, StrategyCycles:150
+Train: Mode:guic, Minutes:1, StrategyError:0.5, StrategyCycles:150
 Whatis: image:./alyaskinskij-malamut/7.jpg
 Whatis: image:./alyaskinskij-malamut/6.jpg
 Whatis: image:./alyaskinskij-malamut/5.jpg
