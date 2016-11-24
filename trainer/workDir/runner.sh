@@ -9,21 +9,33 @@ usage_getopt() {
         imageClassifySimplTrainer.cmd
 
      Options:
-     -c : Rebuild trainer
+     -c : Recompile trainer
+     -s : Get dog identity mapping
 
      For example:
-        ./runner.sh -e imageClassifySimplTrainer.cmd
+        ./runner.sh -e imageClassifySimplTrainer.cmd -c
 
      Notes:
      "
 }
 
-eis=false
+if [ -z $* ]
+then
+    echo "No options found!"
+    usage_getopt
+    exit 1
+fi
 
-    while getopts ":r:jg:c" opt; do
+
+    while getopts ":r:jg:cs" opt; do
         case $opt in
+        s)
+            echo "Get dog identity mapping"
+            cat imageClassify.cmd | grep "identity" | awk '{print $3}' | uniq | awk '{print "Input: "$1}'
+            exit 0
+            ;;
         c)
-            echo "Rebuild..."
+            echo "Compile..."
             cd ..
             gradle build
             cd -
@@ -32,7 +44,7 @@ eis=false
             if [ -n $OPTARG ] ; then
                 echo "Use script: $OPTARG" >&2
                 PROGRAM_NAME=$OPTARG;
-                eis=true
+                local_test_run_cmd $PROGRAM_NAME
             fi
             ;;
         \?)
@@ -45,36 +57,14 @@ eis=false
             usage_getopt
             exit 1
             ;;
+        *)
+            echo "No reasonable options found!"
+            usage_getopt
+            ;;
         esac
     done
-
-
-list_stories_by_keyword() {
-    keyword=$1
-    grep -rli --include=*.story --exclude-dir=target "$keyword" . | awk -F/ '{print($NF)}' | sed -e 's/.story/,/'
-}
-
-verify_params_and_run() {
-    if $eis
-    then
-        local_test_run_cmd $PROGRAM_NAME
-    else
-
-        if [ -n "$lis" ]; then
-            list_stories_by_keyword $lis
-            exit 0;
-        fi;
-
-        echo "Define ENV.NAME. -e is mandatory"
-        usage_getopt
-
-    fi;
-
-}
 
 local_test_run_cmd() {
     cmd_script=$1
     java -jar ../build/libs/trainer.jar "./$cmd_script"
 }
-
-verify_params_and_run
