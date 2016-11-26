@@ -23,7 +23,7 @@ jar {
     }
 
     manifest {
-        attributes 'Main-Class': 'ru.electronikas.dogexpert.trainer.ImageNeuralNetwork'
+        attributes 'Main-Class': 'ru.electronikas.dogexpert.trainer.ImageNeuralNetworkProgram'
     }
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'

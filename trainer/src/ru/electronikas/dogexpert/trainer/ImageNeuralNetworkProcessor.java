@@ -23,7 +23,9 @@
  */
 package ru.electronikas.dogexpert.trainer;
 
-import org.encog.Encog;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
@@ -37,87 +39,37 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.platformspecific.j2se.TrainingDialog;
-import org.encog.platformspecific.j2se.data.image.ImageMLData;
-import org.encog.platformspecific.j2se.data.image.ImageMLDataSet;
-import org.encog.util.downsample.Downsample;
-import org.encog.util.downsample.RGBDownsample;
-import org.encog.util.downsample.SimpleIntensityDownsample;
 import org.encog.util.simple.EncogUtility;
+import ru.electronikas.dogsexpert.neural.ImagePair;
+import ru.electronikas.dogsexpert.neural.downsample.Downsample;
+import ru.electronikas.dogsexpert.neural.downsample.RGBDownsample;
+import ru.electronikas.dogsexpert.neural.downsample.SimpleIntensityDownsample;
+import ru.electronikas.dogsexpert.neural.image.PixmapMLData;
+import ru.electronikas.dogsexpert.neural.image.PixmapMLDataSet;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Should have an input file similar to:
- * 
- * CreateTraining: width:16,height:16,type:RGB 
- * Input: image:./coins/dime.png, identity:dime 
- * Input: image:./coins/dollar.png, identity:dollar 
- * Input: image:./coins/half.png, identity:half dollar 
- * Input: image:./coins/nickle.png, identity:nickle 
- * Input: image:./coins/penny.png, identity:penny 
- * Input: image:./coins/quarter.png, identity:quarter 
- * Network: hidden1:100, hidden2:0
- * Train: Mode:console, Minutes:1, StrategyError:0.25, StrategyCycles:50 
- * Whatis: image:./coins/dime.png 
- * Whatis: image:./coins/half.png 
- * Whatis: image:./coins/testcoin.png
- * 
- */
-public class ImageNeuralNetwork {
-
-	class ImagePair {
-		private final File file;
-		private final int identity;
-
-		public ImagePair(final File file, final int identity) {
-			super();
-			this.file = file;
-			this.identity = identity;
-		}
-
-		public File getFile() {
-			return this.file;
-		}
-
-		public int getIdentity() {
-			return this.identity;
-		}
-	}
-
-	public static void main(final String[] args) {
-		if (args.length < 1) {
-			System.out
-					.println("Must specify command file.  See source for format.");
-		} else {
-			try {
-				final ImageNeuralNetwork program = new ImageNeuralNetwork();
-				program.execute(args[0]);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		Encog.getInstance().shutdown();
-	}
-
-	private final List<ImagePair> imageList = new ArrayList<ImagePair>();
-	private final Map<String, String> args = new HashMap<String, String>();
-	private final Map<String, Integer> identity2neuron = new HashMap<String, Integer>();
-	private final Map<Integer, String> neuron2identity = new HashMap<Integer, String>();
-	private ImageMLDataSet training;
+public class ImageNeuralNetworkProcessor {
+	private Map<String, String> args = new HashMap<String, String>();
 	private String line;
+
 	private int outputCount;
 	private int downsampleWidth;
 	private int downsampleHeight;
 	private BasicNetwork network;
 
 	private Downsample downsample;
+	private final List<ImagePair> imageList = new ArrayList<ImagePair>();
+	private final Map<String, Integer> identity2neuron = new HashMap<String, Integer>();
+	private final Map<Integer, String> neuron2identity = new HashMap<Integer, String>();
+	private PixmapMLDataSet training;
 
 	private int assignIdentity(final String identity) {
 
@@ -132,19 +84,21 @@ public class ImageNeuralNetwork {
 		return result;
 	}
 
-	public void execute(final String file) throws IOException {
-		final FileInputStream fstream = new FileInputStream(file);
-		final DataInputStream in = new DataInputStream(fstream);
-		final BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-		while ((this.line = br.readLine()) != null) {
-			executeLine();
+	private String getArg(final String name) {
+		final String result = this.args.get(name);
+		if (result == null) {
+			throw new EncogError("Missing argument " + name + " on line: "
+					+ this.line);
 		}
-		in.close();
+		return result;
 	}
 
-	private void executeCommand(final String command,
-			final Map<String, String> args) throws IOException {
+	public void executeCommand(final String command,
+							   final String line,
+							   final Map<String, String> args) throws IOException {
+		this.line = line;
+		this.args = args;
+
 		if (command.equals("input")) {
 			processInput();
 		} else if (command.equals("createtraining")) {
@@ -192,40 +146,6 @@ public class ImageNeuralNetwork {
 		this.network = (BasicNetwork)EncogDirectoryPersistence.loadObject(new File(fileName));
 	}
 
-	public void executeLine() throws IOException {
-		final int index = this.line.indexOf(':');
-		if (index == -1) {
-			throw new EncogError("Invalid command: " + this.line);
-		}
-
-		final String command = this.line.substring(0, index).toLowerCase()
-				.trim();
-		final String argsStr = this.line.substring(index + 1).trim();
-		final StringTokenizer tok = new StringTokenizer(argsStr, ",");
-		this.args.clear();
-		while (tok.hasMoreTokens()) {
-			final String arg = tok.nextToken();
-			final int index2 = arg.indexOf(':');
-			if (index2 == -1) {
-				throw new EncogError("Invalid command: " + this.line);
-			}
-			final String key = arg.substring(0, index2).toLowerCase().trim();
-			final String value = arg.substring(index2 + 1).trim();
-			this.args.put(key, value);
-		}
-
-		executeCommand(command, this.args);
-	}
-
-	private String getArg(final String name) {
-		final String result = this.args.get(name);
-		if (result == null) {
-			throw new EncogError("Missing argument " + name + " on line: "
-					+ this.line);
-		}
-		return result;
-	}
-
 	private void processCreateTraining() {
 		final String strWidth = getArg("width");
 		final String strHeight = getArg("height");
@@ -240,7 +160,7 @@ public class ImageNeuralNetwork {
 			this.downsample = new SimpleIntensityDownsample();
 		}
 
-		this.training = new ImageMLDataSet(this.downsample, false, 1, -1);
+		this.training = new PixmapMLDataSet(this.downsample, false, 1, -1);
 		System.out.println("Training set created");
 	}
 
@@ -278,8 +198,9 @@ public class ImageNeuralNetwork {
 				}
 			}
 
-			final Image img = ImageIO.read(pair.getFile());
-			final ImageMLData data = new ImageMLData(img);
+//			final Image img = ImageIO.read(pair.getFile());
+			Pixmap pixmap = getPixmapFromImageFile(pair.getFile().getPath());
+			final PixmapMLData data = new PixmapMLData(pixmap);
 			this.training.add(data, ideal);
 		}
 
@@ -298,9 +219,17 @@ public class ImageNeuralNetwork {
 		final int hidden5 = Integer.parseInt(strHidden5);
 
 		this.network = simpleFeedForward(this.training
-				.getInputSize(), hidden1, hidden2, hidden3, hidden4, hidden5,
+						.getInputSize(), hidden1, hidden2, hidden3, hidden4, hidden5,
 				this.training.getIdealSize(), true);
 		System.out.println("Created network: " + this.network.toString());
+	}
+
+	private Pixmap getPixmapFromImageFile(String path) {
+		Texture texture = new Texture(new FileHandle(path));
+		if (!texture.getTextureData().isPrepared()) {
+			texture.getTextureData().prepare();
+		}
+		return texture.getTextureData().consumePixmap();
 	}
 
 	public static BasicNetwork simpleFeedForward(final int input,
@@ -374,8 +303,8 @@ public class ImageNeuralNetwork {
 	public void processWhatIs() throws IOException {
 		final String filename = getArg("image");
 		final File file = new File(filename);
-		final Image img = ImageIO.read(file);
-		final ImageMLData input = new ImageMLData(img);
+		Pixmap pixmap = getPixmapFromImageFile(file.getPath());
+		final PixmapMLData input = new PixmapMLData(pixmap);
 		input.downsample(this.downsample, false, this.downsampleHeight,
 				this.downsampleWidth, 1, -1);
 
@@ -390,4 +319,6 @@ public class ImageNeuralNetwork {
 //		System.out.println();
 
 	}
+
+
 }

@@ -43,6 +43,10 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.github.sarxos:webcam-capture:0.3.10"
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+        compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+
     }
 }
 
@@ -103,7 +107,9 @@ project(":trainer") {
     apply plugin: "java"
 
     dependencies {
-        compile "org.encog:encog-core:$encogVersion"
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "net.sourceforge.htmlcleaner:htmlcleaner:2.14"
     }
 }

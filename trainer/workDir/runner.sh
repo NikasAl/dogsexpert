@@ -13,11 +13,17 @@ usage_getopt() {
      -s : Get dog identity mapping
 
      For example:
-        ./runner.sh -e imageClassifySimplTrainer.cmd -c
+        ./runner.sh -r imageClassifySimplTrainer.cmd -c
 
      Notes:
      "
 }
+
+local_test_run_cmd() {
+    cmd_script=$1
+    java -jar ../build/libs/trainer.jar "./$cmd_script"
+}
+
 
 if [ -z $* ]
 then
@@ -29,16 +35,16 @@ fi
 
     while getopts ":r:jg:cs" opt; do
         case $opt in
-        s)
-            echo "Get dog identity mapping"
-            cat imageClassify.cmd | grep "identity" | awk '{print $3}' | uniq | awk '{print "Input: "$1}'
-            exit 0
-            ;;
         c)
             echo "Compile..."
             cd ..
             gradle build
             cd -
+            ;;
+        s)
+            echo "Get dog identity mapping"
+            cat imageClassify.cmd | grep "identity" | awk '{print $3}' | uniq | awk '{print "Input: "$1}'
+            exit 0
             ;;
         r)
             if [ -n $OPTARG ] ; then
@@ -63,8 +69,3 @@ fi
             ;;
         esac
     done
-
-local_test_run_cmd() {
-    cmd_script=$1
-    java -jar ../build/libs/trainer.jar "./$cmd_script"
-}
