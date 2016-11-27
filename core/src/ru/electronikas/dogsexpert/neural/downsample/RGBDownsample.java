@@ -23,10 +23,7 @@
  */
 package ru.electronikas.dogsexpert.neural.downsample;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 
 /**
  * Downsample an image keeping the RGB colors.
@@ -107,27 +104,13 @@ public class RGBDownsample implements Downsample {
 	public double[] downSample(final Pixmap image, final int height,
 							   final int width) {
 
-
 		processImage(image);
 
 		final double[] result = new double[height * width * 3];
-
-/*
-		final PixelGrabber grabber = new PixelGrabber(image, 0, 0,
-				this.imageWidth, this.imageHeight, true);
-
-		try {
-			grabber.grabPixels();
-		} catch (final InterruptedException e) {
-			throw new EncogError(e);
-		}
-*/
-
 		int[] array = getPixelsFromPixmap(image);
-
 		this.pixelMap = array;
 
-//		saveTestPixmapToPNG(array, width, height);
+//		PixmapImageWriter.saveTestPixmapToPNG(array, image.getWidth(), image.getHeight());
 
 		// now downsample
 
@@ -146,25 +129,8 @@ public class RGBDownsample implements Downsample {
 			}
 		}
 
-//		saveTestPixmapToPNG(result, width, height);
+//		PixmapImageWriter.saveTestPixmapToPNG(result, width, height);
 		return result;
-	}
-
-	private void saveTestPixmapToPNG(double[] result, int width, int height) {
-
-		Pixmap pxm = new Pixmap(width, height, Pixmap.Format.RGB888);
-		int count = 0;
-		for (int y=0; y<height; y++) {
-			for (int x=0; x<width; x++) {
-				double r = result[count++]; r /= 255;// r += 1; r *= 127;
-				double g = result[count++]; g /= 255;// g += 1; g *= 127;
-				double b = result[count++]; b /= 255;// b += 1; b *= 127;
-				pxm.drawPixel(x, y, Color.rgb888((float)r,(float)g,(float)b));
-			}
-		}
-
-		FileHandle fileHandle = new FileHandle("./example.png");
-		PixmapIO.writePNG(fileHandle, pxm);
 	}
 
 	private int[] getPixelsFromPixmap(Pixmap image) {
@@ -206,11 +172,9 @@ public class RGBDownsample implements Downsample {
 			for (int xx = startX; xx < endX; xx++) {
 				final int loc = xx + yy * this.imageWidth;
 				final int pixel = this.pixelMap[loc];
-				final int red = pixel >> 16 & 0xff;
-				final int green = pixel >> 8 & 0xff;
-				final int blue = pixel & 0xff;
-
-//				return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
+				final int red = pixel >> 24 & 0xff;
+				final int green = pixel >> 16 & 0xff;
+				final int blue = pixel >> 8 & 0xff;
 
 				redTotal += red;
 				greenTotal += green;

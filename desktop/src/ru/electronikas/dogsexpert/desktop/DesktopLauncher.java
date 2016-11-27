@@ -2,14 +2,13 @@ package ru.electronikas.dogsexpert.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.github.sarxos.webcam.Webcam;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
 import ru.electronikas.dogsexpert.listeners.PlatformListener;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 
 public class DesktopLauncher implements PlatformListener {
@@ -35,21 +34,18 @@ public class DesktopLauncher implements PlatformListener {
 	}
 
 	@Override
-	public BufferedImage getCameraSnapshot() {
+	public Image getCameraSnapshot() {
 		Webcam webcam = Webcam.getDefault();
 		webcam.open();
 //		ImageIO.write(webcam.getImage(), "PNG", new File("hello-world.png"));
-		return webcam.getImage();
+//		return webcam.getImage();
+		return null;
 	}
 
 	@Override
-	public BufferedImage getPictureFromDisk() {
-		try {
-			return ImageIO.read(new File("hello-world.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	public Image getPictureFromDisk() {
+		Texture txt = new Texture(new FileHandle("hello-word.png"));
+		Image img = new Image(txt);
+		return img;
 	}
 }

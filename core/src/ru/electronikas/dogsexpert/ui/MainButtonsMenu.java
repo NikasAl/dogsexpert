@@ -14,11 +14,6 @@ import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
 import ru.electronikas.dogsexpert.Textures;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 import static ru.electronikas.dogsexpert.Utils.textSizeTuning;
 
 /**
@@ -79,13 +74,6 @@ public class MainButtonsMenu {
         camShotBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
 //                animateHide();
-                BufferedImage ri = DogsExpertGdxGame.game.platformListener.getCameraSnapshot();
-                try {
-                    ImageIO.write(ri, "PNG", new File("hello-world.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
             }
         });
         return camShotBut;
@@ -97,7 +85,7 @@ public class MainButtonsMenu {
         textSizeTuning(ChoosePhotoBut.getLabel(), width);
         ChoosePhotoBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                BufferedImage ri = DogsExpertGdxGame.game.platformListener.getPictureFromDisk();
+                Image ri = DogsExpertGdxGame.game.platformListener.getPictureFromDisk();
 
             }
         });
