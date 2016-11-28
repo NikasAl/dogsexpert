@@ -43,9 +43,8 @@ public class DesktopLauncher implements PlatformListener {
 	}
 
 	@Override
-	public Image getPictureFromDisk() {
-		Texture txt = new Texture(new FileHandle("hello-word.png"));
-		Image img = new Image(txt);
-		return img;
+	public Texture getPictureFromDisk() {
+		Texture txt = new Texture(new FileHandle("data/undefined1.jpg"));
+		return txt;
 	}
 }

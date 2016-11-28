@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import ru.electronikas.dogsexpert.listeners.PlatformListener;
+import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 import ru.electronikas.dogsexpert.ui.MainButtonsMenu;
 
 public class DogsExpertGdxGame extends ApplicationAdapter {
@@ -15,7 +16,7 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 	private Stage stage;
 	public PlatformListener platformListener;
 	public static DogsExpertGdxGame game;
-
+	public NeuralProcessor processor;
 
 	public DogsExpertGdxGame(PlatformListener platformListener) {
 		this.platformListener = platformListener;
@@ -32,8 +33,10 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 
 		Gdx.input.setInputProcessor(stage);
 
+		processor = new NeuralProcessor();
+
 //		stage.setDebugAll(true);
-		new MainButtonsMenu(stage).animateOpen();
+		new MainButtonsMenu(stage, processor).animateOpen();
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package ru.electronikas.dogsexpert.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,10 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
 import ru.electronikas.dogsexpert.Textures;
+import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 
 import static ru.electronikas.dogsexpert.Utils.textSizeTuning;
 
@@ -25,9 +28,11 @@ public class MainButtonsMenu {
     float butW = 0;
     float h = 0;
     private Stage stage;
+    private NeuralProcessor processor;
 
-    public MainButtonsMenu(Stage stage) {
+    public MainButtonsMenu(Stage stage, NeuralProcessor processor) {
         this.stage = stage;
+        this.processor = processor;
         float w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
         butW = w / 8f;
@@ -56,9 +61,11 @@ public class MainButtonsMenu {
         createImage();
     }
 
+    Image image;
+
     private void createImage() {
         Texture texture = new Texture("data/0.jpg");
-        Image image = new Image(texture);
+        image = new Image(texture);
         float scl = image.getWidth() / image.getHeight();
         image.setWidth(Gdx.graphics.getWidth());
         image.setHeight(Gdx.graphics.getWidth() / scl);
@@ -85,7 +92,11 @@ public class MainButtonsMenu {
         textSizeTuning(ChoosePhotoBut.getLabel(), width);
         ChoosePhotoBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                Image ri = DogsExpertGdxGame.game.platformListener.getPictureFromDisk();
+                Texture ri = DogsExpertGdxGame.game.platformListener.getPictureFromDisk();
+                TextureRegionDrawable rrr = new TextureRegionDrawable();
+                rrr.setRegion(new TextureRegion(ri));
+                image.setDrawable(new TextureRegionDrawable(rrr));
+                processor.processWhatIs(ri);
 
             }
         });
