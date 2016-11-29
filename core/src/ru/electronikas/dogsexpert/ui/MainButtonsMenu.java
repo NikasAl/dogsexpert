@@ -1,8 +1,8 @@
 package ru.electronikas.dogsexpert.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
 import ru.electronikas.dogsexpert.Textures;
+import ru.electronikas.dogsexpert.listeners.ImageChooseListener;
 import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 
 import static ru.electronikas.dogsexpert.Utils.textSizeTuning;
@@ -92,16 +92,28 @@ public class MainButtonsMenu {
         textSizeTuning(ChoosePhotoBut.getLabel(), width);
         ChoosePhotoBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                Texture ri = DogsExpertGdxGame.game.platformListener.getPictureFromDisk();
-                TextureRegionDrawable rrr = new TextureRegionDrawable();
-                rrr.setRegion(new TextureRegion(ri));
-                image.setDrawable(new TextureRegionDrawable(rrr));
-                processor.processWhatIs(ri);
+
+                DogsExpertGdxGame.game.platformListener.choosePictureFromDisk(imgChooseListener);
 
             }
         });
         return ChoosePhotoBut;
     }
+
+    ImageChooseListener imgChooseListener = new ImageChooseListener() {
+        @Override
+        public void onChooseImage(final Pixmap pixmap) {
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+//                    TextureRegionDrawable rrr = new TextureRegionDrawable();
+//                    rrr.setRegion(new TextureRegion(pixmap));
+//                    image.setDrawable(new TextureRegionDrawable(rrr));
+                    processor.processWhatIs(pixmap);
+                }
+            });
+        }
+    };
 
     private Actor createHeader(float width) {
         Label headLabel =  new Label(Assets.bdl().get("mainLabel"), uiSkin);

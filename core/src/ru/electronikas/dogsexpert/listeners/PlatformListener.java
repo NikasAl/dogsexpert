@@ -1,6 +1,5 @@
 package ru.electronikas.dogsexpert.listeners;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**
@@ -11,5 +10,5 @@ public interface PlatformListener {
     void rate();
 
     Image getCameraSnapshot();
-    Texture getPictureFromDisk();
+    void choosePictureFromDisk(ImageChooseListener imageChooseListener);
 }
