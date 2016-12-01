@@ -84,6 +84,7 @@ public enum Breeds {
     skotch_terer,
     erdelterer,
     yaponskij_xin,
+    english_springer_spaniel,
     ;
 
     public String getDescription() {
