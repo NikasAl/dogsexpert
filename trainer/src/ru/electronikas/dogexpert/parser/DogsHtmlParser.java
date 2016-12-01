@@ -67,7 +67,7 @@ public class DogsHtmlParser {
         }
     }
 
-    private void feelBreeds(List<BreedRef> breedRefs) {
+    public void feelBreeds(List<BreedRef> breedRefs) {
         for (BreedRef breed : breedRefs) {
             breed.feel(cleaner);
         }

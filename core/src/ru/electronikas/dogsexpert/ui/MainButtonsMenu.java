@@ -3,6 +3,7 @@ package ru.electronikas.dogsexpert.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
@@ -70,7 +72,7 @@ public class MainButtonsMenu {
         image.setWidth(Gdx.graphics.getWidth());
         image.setHeight(Gdx.graphics.getWidth() / scl);
         stage.addActor(image);
-        image.addAction(Actions.moveTo(0,Gdx.graphics.getHeight() / scl,0.5f));
+        image.addAction(Actions.moveTo(0,Gdx.graphics.getHeight() - image.getHeight(),0.5f));
 
     }
 
@@ -106,9 +108,9 @@ public class MainButtonsMenu {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
-//                    TextureRegionDrawable rrr = new TextureRegionDrawable();
-//                    rrr.setRegion(new TextureRegion(pixmap));
-//                    image.setDrawable(new TextureRegionDrawable(rrr));
+                    TextureRegionDrawable rrr = new TextureRegionDrawable();
+                    rrr.setRegion(new TextureRegion(new Texture(pixmap)));
+                    image.setDrawable(new TextureRegionDrawable(rrr));
                     processor.processWhatIs(pixmap);
                 }
             });

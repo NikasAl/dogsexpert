@@ -7,5 +7,5 @@ import com.badlogic.gdx.graphics.Pixmap;
  */
 public interface ImageChooseListener {
 
-    void onChooseImage(Pixmap texture);
+    void onChooseImage(Pixmap pixmap);
 }

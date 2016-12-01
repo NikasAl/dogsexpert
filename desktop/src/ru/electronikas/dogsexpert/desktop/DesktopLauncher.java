@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.github.sarxos.webcam.Webcam;
 import ru.electronikas.dogsexpert.DogsExpertGdxGame;
+import ru.electronikas.dogsexpert.listeners.ImageChooseListener;
 import ru.electronikas.dogsexpert.listeners.PlatformListener;
 
 import java.util.Locale;
@@ -43,8 +44,12 @@ public class DesktopLauncher implements PlatformListener {
 	}
 
 	@Override
-	public Texture getPictureFromDisk() {
+	public void choosePictureFromDisk(ImageChooseListener imageChooseListener) {
 		Texture txt = new Texture(new FileHandle("data/undefined1.jpg"));
-		return txt;
+		if(!txt.getTextureData().isPrepared()) {
+			txt.getTextureData().prepare();
+		}
+		imageChooseListener.onChooseImage(txt.getTextureData().consumePixmap());
 	}
+
 }
