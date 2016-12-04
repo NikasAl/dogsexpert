@@ -35,6 +35,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.train.strategy.ResetStrategy;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.AnalyzeNetwork;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -267,6 +268,30 @@ public class ImageNeuralNetworkProcessor {
 
 		final BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.reset();
+
+		AnalyzeNetwork analyze = new AnalyzeNetwork(network);
+		System.out.println(analyze.toString());
+/*
+		for(int i=0; i<1000; i++)
+			network.enableConnection(0,i,i,false);
+
+		analyze = new AnalyzeNetwork(network);
+		System.out.println(analyze.toString());*/
+
+		/*
+
+		AnalyzeNetwork analyze = new AnalyzeNetwork(network);
+		double remove = analyze.getWeights().getHigh()/1.5;
+		System.out.println(analyze.toString());
+		System.out.println("Remove connections below:" + Format.formatDouble(remove,5));
+		network.setProperty(BasicNetwork.TAG_LIMIT,remove);
+		network.getStructure().finalizeLimit();
+
+
+//		network.reset();
+		analyze = new AnalyzeNetwork(network);
+		System.out.println(analyze.toString());
+*/
 		return network;
 	}
 
@@ -317,6 +342,28 @@ public class ImageNeuralNetworkProcessor {
 //			System.out.print(nf.format(speed) + ", ");
 //		}
 //		System.out.println();
+
+	}
+
+	public void loadsaveWeights() {
+		/*        double[] weights = network.getStructure().getFlat().getWeights();
+//        writing array to disk
+        FileOutputStream f_out = null;
+        try {
+            f_out = new FileOutputStream("data/myarray.data");
+            ObjectOutputStream obj_out = new ObjectOutputStream (f_out);
+            obj_out.writeObject (weights);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+            // reading array from disk
+    FileInputStream f_in = new FileInputStream("C:\myarray.data");
+    ObjectInputStream obj_in = new ObjectInputStream (f_in);
+    tmp_array = (int[])obj_in.readObject();
+        */
 
 	}
 

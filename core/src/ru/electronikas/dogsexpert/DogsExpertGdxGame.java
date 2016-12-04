@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import ru.electronikas.dogsexpert.listeners.PlatformListener;
 import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
+import ru.electronikas.dogsexpert.ui.LoadingPanel;
 import ru.electronikas.dogsexpert.ui.MainButtonsMenu;
 
 public class DogsExpertGdxGame extends ApplicationAdapter {
@@ -17,6 +18,8 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 	public PlatformListener platformListener;
 	public static DogsExpertGdxGame game;
 	public NeuralProcessor processor;
+	private boolean assetsLoaded = false;
+	private LoadingPanel loadingPanel;
 
 	public DogsExpertGdxGame(PlatformListener platformListener) {
 		this.platformListener = platformListener;
@@ -32,15 +35,24 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 		stage = new Stage(viewport, batch);
 
 		Gdx.input.setInputProcessor(stage);
+		loadingPanel = new LoadingPanel(stage);
 
+		Assets.initLoading();
+	}
+
+	private void assetsOnLoad() {
 		processor = new NeuralProcessor();
-
-//		stage.setDebugAll(true);
 		new MainButtonsMenu(stage, processor).animateOpen();
 	}
 
 	@Override
 	public void render () {
+		if(!assetsLoaded && Assets.getAssetMgr().update()) {
+			loadingPanel.stop();
+			assetsOnLoad();
+			assetsLoaded = true;
+		}
+
 		Gdx.gl.glClearColor(0.8f, 0.3f, 1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

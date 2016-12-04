@@ -1,8 +1,12 @@
 package ru.electronikas.dogsexpert;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.I18NBundle;
+import org.encog.neural.networks.BasicNetwork;
+import ru.electronikas.dogsexpert.neural.processing.NeuralNetLoader;
 
 import java.util.Locale;
 
@@ -12,6 +16,7 @@ import java.util.Locale;
  */
 public class Assets {
 
+    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
     private static I18NBundle myBundle;
 
     public static I18NBundle bdl() {
@@ -30,6 +35,25 @@ public class Assets {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private static AssetManager assetManager;
+    public static AssetManager getAssetMgr() {
+        if(assetManager==null) {
+            assetManager = new AssetManager();
+        }
+        return assetManager;
+    }
+
+    public static void initLoading() {
+        startLoadNet();
+    }
+
+
+    private static void startLoadNet() {
+        NeuralNetLoader nnl = new NeuralNetLoader(new InternalFileHandleResolver());
+        getAssetMgr().setLoader(BasicNetwork.class, nnl);
+        getAssetMgr().load(NETWORK, BasicNetwork.class);
     }
 
 }

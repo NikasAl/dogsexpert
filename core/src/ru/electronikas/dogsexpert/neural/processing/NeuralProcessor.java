@@ -1,11 +1,9 @@
 package ru.electronikas.dogsexpert.neural.processing;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import org.encog.ml.data.MLData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.persist.EncogDirectoryPersistence;
+import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.neural.Breed;
 import ru.electronikas.dogsexpert.neural.downsample.Downsample;
 import ru.electronikas.dogsexpert.neural.downsample.RGBDownsample;
@@ -26,8 +24,9 @@ public class NeuralProcessor {
 
     public NeuralProcessor() {
         downsample = new RGBDownsample();
-        FileHandle fh = Gdx.files.internal("data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg");
-        this.network = (BasicNetwork) EncogDirectoryPersistence.loadObject(fh.read());
+//        FileHandle fh = Gdx.files.internal("data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg");
+//        this.network = (BasicNetwork) EncogDirectoryPersistence.loadObject(fh.read());
+        network = Assets.getAssetMgr().get(Assets.NETWORK, BasicNetwork.class);
     }
 
 //    NumberFormat nf = new DecimalFormat("0.000000#");

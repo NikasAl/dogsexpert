@@ -1,4 +1,4 @@
-CreateTraining: width:50,height:50,type:RGB
+CreateTraining: width:25,height:25,type:RGB
 Input: image:./akita-inu/0.jpg, identity:akita-inu
 Input: image:./akita-inu/1.jpg, identity:akita-inu
 Input: image:./akita-inu/2.jpg, identity:akita-inu
