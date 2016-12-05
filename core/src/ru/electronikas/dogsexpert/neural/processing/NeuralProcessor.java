@@ -16,23 +16,26 @@ import java.util.List;
  * Created by nikas on 11/27/16.
  */
 public class NeuralProcessor {
+    public static final int IM_SIZE = 50;
+    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
 
-    Downsample downsample;
-    BasicNetwork network;
-    int downsampleWidth = 50;
-    int downsampleHeight = 50;
+    private Downsample downsample;
+    private BasicNetwork network;
 
     public NeuralProcessor() {
         downsample = new RGBDownsample();
 //        FileHandle fh = Gdx.files.internal("data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg");
 //        this.network = (BasicNetwork) EncogDirectoryPersistence.loadObject(fh.read());
-        network = Assets.getAssetMgr().get(Assets.NETWORK, BasicNetwork.class);
+        network = Assets.getAssetMgr().get(NETWORK, BasicNetwork.class);
     }
 
 //    NumberFormat nf = new DecimalFormat("0.000000#");
     public List<Breed> processWhatIs(Pixmap pixmap) {
         final List<Breed> breedResultList = new ArrayList<Breed>();
         final PixmapMLData input = new PixmapMLData(pixmap);
+        int downsampleHeight = IM_SIZE;
+        int downsampleWidth = IM_SIZE;
+
         input.downsample(downsample, false, downsampleHeight,
                 downsampleWidth, 1, -1);
 

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import ru.electronikas.dogsexpert.listeners.PlatformListener;
 import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 import ru.electronikas.dogsexpert.ui.LoadingPanel;
-import ru.electronikas.dogsexpert.ui.MainButtonsMenu;
+import ru.electronikas.dogsexpert.ui.MainPanel;
 
 public class DogsExpertGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -42,7 +42,7 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 
 	private void assetsOnLoad() {
 		processor = new NeuralProcessor();
-		new MainButtonsMenu(stage, processor).animateOpen();
+		new MainPanel(stage, processor).animateOpen();
 	}
 
 	@Override

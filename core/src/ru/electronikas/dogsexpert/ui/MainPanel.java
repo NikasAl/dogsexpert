@@ -24,7 +24,7 @@ import static ru.electronikas.dogsexpert.Utils.textSizeTuning;
 /**
  * Created by navdonin on 03/01/15.
  */
-public class MainButtonsMenu {
+public class MainPanel {
     Table butsMenu;
     Skin uiSkin;
     float butW = 0;
@@ -32,7 +32,7 @@ public class MainButtonsMenu {
     private Stage stage;
     private NeuralProcessor processor;
 
-    public MainButtonsMenu(Stage stage, NeuralProcessor processor) {
+    public MainPanel(Stage stage, NeuralProcessor processor) {
         this.stage = stage;
         this.processor = processor;
         float w = Gdx.graphics.getWidth();
@@ -44,11 +44,15 @@ public class MainButtonsMenu {
         butsMenu.align(Align.topLeft);
         butsMenu.setPosition(butW / 2, h);
         butsMenu.setWidth(w - butW);
-        butsMenu.setHeight(h / 3);
+        butsMenu.setHeight(h);
 //        butsMenu.background("bluepane-t");
 
         butsMenu.row().height(h / 10).width(w - butW);
         butsMenu.add(createHeader(w - butW));
+
+        butsMenu.row().height(h / 3).width(w - butW);
+        butsMenu.add(createImage());
+
 
         butsMenu.row().height(h / 10);
         butsMenu.add(camShotButton(butW * 4f)).pad(10).width(butW * 4f);
@@ -60,20 +64,17 @@ public class MainButtonsMenu {
 
         stage.addActor(butsMenu);
 
-        createImage();
     }
 
     Image image;
 
-    private void createImage() {
+    private Image createImage() {
         Texture texture = new Texture("data/0.jpg");
         image = new Image(texture);
-        float scl = image.getWidth() / image.getHeight();
-        image.setWidth(Gdx.graphics.getWidth());
-        image.setHeight(Gdx.graphics.getWidth() / scl);
-        stage.addActor(image);
-        image.addAction(Actions.moveTo(0,Gdx.graphics.getHeight() - image.getHeight(),0.5f));
-
+//        float scl = image.getWidth() / image.getHeight();
+//        image.setWidth(Gdx.graphics.getWidth());
+//        image.setHeight(Gdx.graphics.getWidth() / scl);
+        return image;
     }
 
     private Actor camShotButton(float width) {
@@ -131,7 +132,7 @@ public class MainButtonsMenu {
     }
 
     public void animateOpen() {
-        MoveToAction action = Actions.moveTo(butW / 2, h/3);
+        MoveToAction action = Actions.moveTo(butW / 2, 0);
         action.setDuration(0.5f);
         butsMenu.addAction(action);
 
