@@ -1,4 +1,4 @@
-CreateTraining: width:25,height:25,type:RGB
+CreateTraining: width:10,height:10,type:RGB
 Input: image:./akita-inu/0.jpg, identity:akita-inu
 Input: image:./akita-inu/1.jpg, identity:akita-inu
 Input: image:./akita-inu/2.jpg, identity:akita-inu
@@ -4946,7 +4946,8 @@ Input: image:./english-springer-spaniel/1006.jpg, identity:english-springer-span
 Input: image:./english-springer-spaniel/1007.jpg, identity:english-springer-spaniel
 Input: image:./english-springer-spaniel/1008.jpg, identity:english-springer-spaniel
 Input: image:./english-springer-spaniel/1009.jpg, identity:english-springer-spaniel
-Network: hidden1:250, hidden2:150, hidden3:150, hidden4:150, hidden5:100
+#Network: hidden1:250, hidden2:150, hidden3:150, hidden4:150, hidden5:100
+Network: hiddens:250 150 150 150 100 100 100 100 90 90 90 80 80 80 80
 SaveTrainData: file: ./dogs.egb
 #SaveNet: file:./dogs.eg
 Train: Mode:gui, Minutes:1, StrategyError:0.5, StrategyCycles:150

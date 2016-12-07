@@ -205,22 +205,19 @@ public class ImageNeuralNetworkProcessor {
 			this.training.add(data, ideal);
 		}
 
-		final String strHidden1 = getArg("hidden1");
-		final String strHidden2 = getArg("hidden2");
-		final String strHidden3 = getArg("hidden3");
-		final String strHidden4 = getArg("hidden4");
-		final String strHidden5 = getArg("hidden5");
+		final String[] strHiddens = getArg("hiddens").split(" ");
 
 		this.training.downsample(this.downsampleHeight, this.downsampleWidth);
 
-		final int hidden1 = Integer.parseInt(strHidden1);
-		final int hidden2 = Integer.parseInt(strHidden2);
-		final int hidden3 = Integer.parseInt(strHidden3);
-		final int hidden4 = Integer.parseInt(strHidden4);
-		final int hidden5 = Integer.parseInt(strHidden5);
+		List<Integer> hiddens = new ArrayList<>();
+
+		for (String strHidden : strHiddens)
+		{
+			hiddens.add(Integer.valueOf(strHidden));
+		}
 
 		this.network = simpleFeedForward(this.training
-						.getInputSize(), hidden1, hidden2, hidden3, hidden4, hidden5,
+						.getInputSize(), hiddens,
 				this.training.getIdealSize(), true);
 		System.out.println("Created network: " + this.network.toString());
 	}
@@ -234,11 +231,7 @@ public class ImageNeuralNetworkProcessor {
 	}
 
 	public static BasicNetwork simpleFeedForward(final int input,
-												 final int hidden1,
-												 final int hidden2,
-												 final int hidden3,
-												 final int hidden4,
-												 final int hidden5,
+												 List<Integer> hiddens,
 												 final int output,
 												 final boolean tanh) {
 		final FeedForwardPattern pattern = new FeedForwardPattern();
@@ -250,21 +243,8 @@ public class ImageNeuralNetworkProcessor {
 			pattern.setActivationFunction(new ActivationSigmoid());
 		}
 
-		if (hidden1 > 0) {
-			pattern.addHiddenLayer(hidden1);
-		}
-		if (hidden2 > 0) {
-			pattern.addHiddenLayer(hidden2);
-		}
-		if (hidden3 > 0) {
-			pattern.addHiddenLayer(hidden3);
-		}
-		if (hidden4 > 0) {
-			pattern.addHiddenLayer(hidden5);
-		}
-		if (hidden5 > 0) {
-			pattern.addHiddenLayer(hidden5);
-		}
+		for(Integer hidden : hiddens)
+			pattern.addHiddenLayer(hidden);
 
 		final BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.reset();
