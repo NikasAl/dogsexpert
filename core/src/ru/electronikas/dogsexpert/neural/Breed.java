@@ -102,7 +102,10 @@ public enum Breed {
     }
 
     public String getImagePath() {
-        return "data/" + this.name() + "/0.jpg";
+        return "data/breeds/" + this.name() + "/0.jpg";
     }
 
+    public static int size() {
+        return values().length;
+    }
 }

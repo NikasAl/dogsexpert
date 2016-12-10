@@ -53,11 +53,11 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 			assetsLoaded = true;
 		}
 
-		Gdx.gl.glClearColor(0.8f, 0.3f, 1f, 1);
+		Gdx.gl.glClearColor(0.2f, 0.6f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		stage.draw();
 		stage.act();
+		stage.draw();
 
 	}
 	

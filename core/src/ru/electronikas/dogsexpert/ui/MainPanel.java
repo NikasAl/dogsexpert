@@ -32,6 +32,8 @@ public class MainPanel {
     private Stage stage;
     private NeuralProcessor processor;
 
+    private BreedsPanel breedsPanel;
+
     public MainPanel(Stage stage, NeuralProcessor processor) {
         this.stage = stage;
         this.processor = processor;
@@ -45,7 +47,7 @@ public class MainPanel {
         butsMenu.setPosition(butW / 2, h);
         butsMenu.setWidth(w - butW);
         butsMenu.setHeight(h);
-//        butsMenu.background("bluepane-t");
+//        breedsPanel.background("bluepane-t");
 
         butsMenu.row().height(h / 10).width(w - butW);
         butsMenu.add(createHeader(w - butW));
@@ -60,10 +62,10 @@ public class MainPanel {
         butsMenu.row().height(h / 10);
         butsMenu.add(pictureButton(butW * 4f)).pad(10).width(butW * 4f);
 
-//        butsMenu.setDebug(true);
+//        breedsPanel.setDebug(true);
 
         stage.addActor(butsMenu);
-
+        breedsPanel = new BreedsPanel(stage);
     }
 
     Image image;
@@ -77,8 +79,9 @@ public class MainPanel {
         return image;
     }
 
+    TextButton camShotBut;
     private Actor camShotButton(float width) {
-        TextButton camShotBut = new TextButton(Assets.bdl().get("camShotBut"),
+        camShotBut = new TextButton(Assets.bdl().get("camShotBut"),
                 uiSkin.get("green-but", TextButton.TextButtonStyle.class));
         textSizeTuning(camShotBut.getLabel(), width);
         camShotBut.addListener(new ClickListener() {
@@ -89,18 +92,31 @@ public class MainPanel {
         return camShotBut;
     }
 
+    TextButton choosePhotoBut;
     private Actor pictureButton(float width) {
-        TextButton ChoosePhotoBut = new TextButton(Assets.bdl().get("ChoosePhotoBut"),
+        choosePhotoBut = new TextButton(Assets.bdl().get("ChoosePhotoBut"),
                 uiSkin.get("green-but", TextButton.TextButtonStyle.class));
-        textSizeTuning(ChoosePhotoBut.getLabel(), width);
-        ChoosePhotoBut.addListener(new ClickListener() {
+        textSizeTuning(choosePhotoBut.getLabel(), width);
+        choosePhotoBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-
                 DogsExpertGdxGame.game.platformListener.choosePictureFromDisk(imgChooseListener);
-
             }
         });
-        return ChoosePhotoBut;
+        return choosePhotoBut;
+    }
+
+    private void buttonsEnable(boolean isEnabled) {
+        if(isEnabled) {
+            choosePhotoBut.setDisabled(false);
+            choosePhotoBut.setVisible(true);
+            camShotBut.setDisabled(false);
+            camShotBut.setVisible(true);
+        } else {
+            choosePhotoBut.setDisabled(true);
+            choosePhotoBut.setVisible(false);
+            camShotBut.setDisabled(true);
+            camShotBut.setVisible(false);
+        }
     }
 
     ImageChooseListener imgChooseListener = new ImageChooseListener() {
@@ -112,7 +128,8 @@ public class MainPanel {
                     TextureRegionDrawable rrr = new TextureRegionDrawable();
                     rrr.setRegion(new TextureRegion(new Texture(pixmap)));
                     image.setDrawable(new TextureRegionDrawable(rrr));
-                    processor.processWhatIs(pixmap);
+                    buttonsEnable(false);
+                    breedsPanel.runAnimOfAnalysis(processor.processWhatIs(pixmap));
                 }
             });
         }

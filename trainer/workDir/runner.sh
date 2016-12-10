@@ -33,7 +33,7 @@ then
 fi
 
 
-    while getopts ":r:jg:csm" opt; do
+    while getopts "r:jg:csm" opt; do
         case $opt in
         c)
             echo "Compile..."

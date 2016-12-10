@@ -59,4 +59,13 @@ com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: { selection: greenpane, background: bluepane, font: default-font, fontColor: blue, cursor: redpane }
 },
+
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	default-horizontal: { background: slide-line, knob: knob, knobBefore: magentapane },
+},
+
+ru.electronikas.dogsexpert.ui.ProgressBar$ProgressBarStyle: {
+	default: { background: greenpane, progress: magentapane },
+},
+
 }

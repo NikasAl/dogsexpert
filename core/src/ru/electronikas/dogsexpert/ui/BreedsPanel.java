@@ -1,0 +1,145 @@
+package ru.electronikas.dogsexpert.ui;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
+import ru.electronikas.dogsexpert.Textures;
+import ru.electronikas.dogsexpert.Utils;
+import ru.electronikas.dogsexpert.neural.Breed;
+
+import java.util.TreeSet;
+
+/**
+ * Created by navdonin on 03/01/15.
+ */
+public class BreedsPanel {
+    private TextProgressBar progressBar;
+    Table breedsPanel;
+    Table scrollBreedsPanel;
+    Skin uiSkin;
+    float butW = 0;
+    float h = 0;
+    float w = 0;
+    float imgSize = 0;
+    private Stage stage;
+
+    public BreedsPanel(Stage stage) {
+        this.stage = stage;
+        w = Gdx.graphics.getWidth();
+        h = 8 * Gdx.graphics.getHeight() / 15;
+        imgSize = h / 3;
+
+        butW = w / 8f;
+
+        uiSkin = Textures.getUiSkin();
+        breedsPanel = new Table(uiSkin);
+        breedsPanel.align(Align.topLeft);
+        breedsPanel.setPosition(butW / 2, -h);
+        breedsPanel.setWidth(w - butW);
+        breedsPanel.setHeight(h);
+//        breedsPanel.background("bluepane-t");
+
+        ScrollPane settigsScroll = new ScrollPane(initialScrollTable(), uiSkin);
+//        settigsScroll.setScale(0.95f);
+        settigsScroll.setScrollingDisabled(true, false);
+        breedsPanel.add(settigsScroll);
+
+//        breedsPanel.row().height(h).width(w - butW);
+//        breedsPanel.add();
+
+        breedsPanel.setDebug(true);
+
+        stage.addActor(breedsPanel);
+
+    }
+
+    private Actor initialScrollTable() {
+        scrollBreedsPanel = new Table(uiSkin);
+        scrollBreedsPanel.align(Align.topLeft);
+        scrollBreedsPanel.setPosition(butW / 2, -h);
+        scrollBreedsPanel.setWidth(w - butW);
+        scrollBreedsPanel.setHeight(h);
+
+        scrollBreedsPanel.row().height(h / 10).width(w - butW).pad(h/40);
+        Label header = new Label("Recognition Result:", uiSkin);
+        Utils.textSizeTuning(header, w - butW, 90);
+        scrollBreedsPanel.add(header).left().colspan(2);
+
+        return scrollBreedsPanel;
+    }
+
+    private TextProgressBar createProgressBar() {
+        TextProgressBar progressBar = new TextProgressBar("Breed recognition",
+                0, Breed.size(), 1f, false, Textures.getUiSkin().get(ProgressBar.ProgressBarStyle.class), Textures.getUiSkin().get(Label.LabelStyle.class));
+//        progressBar.setAnimateDuration(2);
+        progressBar.setValue(0);
+        progressBar.setLabelName(new Label("Complete", Textures.getUiSkin()));
+        return progressBar;
+    }
+
+//    private Image createImage() {
+//        Texture texture = new Texture("data/0.jpg");
+//        image = new Image(texture);
+//        return image;
+//    }
+
+
+    public void animateHide() {
+        MoveToAction action = Actions.moveTo(butW / 2, -h);
+        action.setDuration(0.5f);
+        breedsPanel.addAction(action);
+    }
+
+    public void animateOpen() {
+        MoveToAction action = Actions.moveTo(butW / 2, 0);
+        action.setDuration(0.5f);
+        breedsPanel.addAction(action);
+
+    }
+
+
+    public int i = 0;
+    public void runAnimOfAnalysis(final TreeSet<Breed> breeds) {
+        animateOpen();
+        progressBar = createProgressBar();
+        progressBar.setPosition(butW / 2, h*1.7f);
+        progressBar.setWidth(w - butW);
+        stage.addActor(progressBar);
+
+        Timer.schedule(new Timer.Task(){
+                           @Override
+                           public void run() {
+                               progressBar.setValue(i++);
+                               if(breeds.size() > 0) {
+                                   addBreedToScrollPanel(breeds.pollFirst());
+                               } else {
+                                   progressBar.remove();
+                                   this.cancel();
+                               }
+                           }
+                       }
+                , 0f      //    (delay)
+                , 0.05f     //    (seconds)
+                , Breed.size()
+        );
+    }
+
+
+    private void addBreedToScrollPanel(Breed breed) {
+
+        scrollBreedsPanel.row().height(imgSize).width(w - butW).pad(h/40);
+        Image img = new Image(new Texture(breed.getImagePath()));
+        scrollBreedsPanel.add(img).width(imgSize);
+
+        Label percent = new Label("" + breed.getPercent() + "%", uiSkin);
+//        percent.setFontScale(0.5f);
+        scrollBreedsPanel.add(percent);
+    }
+
+}

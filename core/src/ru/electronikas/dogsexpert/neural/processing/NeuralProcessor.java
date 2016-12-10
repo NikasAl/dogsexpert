@@ -9,8 +9,7 @@ import ru.electronikas.dogsexpert.neural.downsample.Downsample;
 import ru.electronikas.dogsexpert.neural.downsample.RGBDownsample;
 import ru.electronikas.dogsexpert.neural.image.PixmapMLData;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by nikas on 11/27/16.
@@ -30,8 +29,8 @@ public class NeuralProcessor {
     }
 
 //    NumberFormat nf = new DecimalFormat("0.000000#");
-    public List<Breed> processWhatIs(Pixmap pixmap) {
-        final List<Breed> breedResultList = new ArrayList<Breed>();
+    public TreeSet<Breed> processWhatIs(Pixmap pixmap) {
+        TreeSet<Breed> breedTreeSet = new TreeSet<Breed>();
         final PixmapMLData input = new PixmapMLData(pixmap);
         int downsampleHeight = IM_SIZE;
         int downsampleWidth = IM_SIZE;
@@ -53,8 +52,8 @@ public class NeuralProcessor {
             Breed breed = Breed.values()[count];
             breed.setResult(outData.getData(count));
             count++;
-            breedResultList.add(breed);
+            breedTreeSet.add(breed);
         }
-        return breedResultList;
+        return breedTreeSet;
     }
 }
