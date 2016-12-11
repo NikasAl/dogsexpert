@@ -84,13 +84,12 @@ public enum Breed {
     skotch_terer,
     erdelterer,
     yaponskij_xin,
-    english_springer_spaniel,
-    ;
+    english_springer_spaniel,;
 
     private int percent = 0;
 
     public void setResult(double result) {
-       percent = (int) Math.round((result + 1)*50);
+        percent = (int) Math.round((result + 1) * 50);
     }
 
     public int getPercent() {

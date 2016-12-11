@@ -1,6 +1,7 @@
 package ru.electronikas.dogsexpert.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +14,7 @@ import ru.electronikas.dogsexpert.Textures;
 import ru.electronikas.dogsexpert.Utils;
 import ru.electronikas.dogsexpert.neural.Breed;
 
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  * Created by navdonin on 03/01/15.
@@ -105,7 +106,7 @@ public class BreedsPanel {
 
 
     public int i = 0;
-    public void runAnimOfAnalysis(final TreeSet<Breed> breeds) {
+    public void runAnimOfAnalysis(final ArrayList<Breed> breeds) {
         animateOpen();
         progressBar = createProgressBar();
         progressBar.setPosition(butW / 2, h*1.7f);
@@ -115,17 +116,18 @@ public class BreedsPanel {
         Timer.schedule(new Timer.Task(){
                            @Override
                            public void run() {
-                               progressBar.setValue(i++);
-                               if(breeds.size() > 0) {
-                                   addBreedToScrollPanel(breeds.pollFirst());
-                               } else {
+
+                               if(i == breeds.size()) {
                                    progressBar.remove();
                                    this.cancel();
+                                   return;
                                }
+                               addBreedToScrollPanel(breeds.get(i));
+                               progressBar.setValue(i++);
                            }
                        }
                 , 0f      //    (delay)
-                , 0.05f     //    (seconds)
+                , 0.03f     //    (seconds)
                 , Breed.size()
         );
     }
@@ -138,6 +140,9 @@ public class BreedsPanel {
         scrollBreedsPanel.add(img).width(imgSize);
 
         Label percent = new Label("" + breed.getPercent() + "%", uiSkin);
+        if(breed.getPercent()==100) percent.setColor(Color.GREEN);
+        if(breed.getPercent()>10) percent.setColor(Color.YELLOW);
+        else percent.setColor(Color.MAROON);
 //        percent.setFontScale(0.5f);
         scrollBreedsPanel.add(percent);
     }
