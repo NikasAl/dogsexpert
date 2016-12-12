@@ -27,8 +27,9 @@ public class Utils {
         Gdx.app.log("FONT", "calibrated maxScale: " + maxScale);
     }
 
+    public static float maxScale;
     public static void textSizeTuning(Label nameLabel, float width) {
-        float maxScale = 3f;
+        maxScale = 3f;
         nameLabel.setFontScale(maxScale);
         while (nameLabel.getPrefWidth() > width / 2f) {
             maxScale -= 0.1f;

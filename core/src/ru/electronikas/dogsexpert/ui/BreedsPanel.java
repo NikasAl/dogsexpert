@@ -20,6 +20,7 @@ import java.util.ArrayList;
  * Created by navdonin on 03/01/15.
  */
 public class BreedsPanel {
+    private final ButtonsPanel buttonsPanel;
     private TextProgressBar progressBar;
     Table breedsPanel;
     Table scrollBreedsPanel;
@@ -54,10 +55,11 @@ public class BreedsPanel {
 //        breedsPanel.row().height(h).width(w - butW);
 //        breedsPanel.add();
 
-        breedsPanel.setDebug(true);
+//        breedsPanel.setDebug(true);
 
         stage.addActor(breedsPanel);
 
+        buttonsPanel = new ButtonsPanel(stage);
     }
 
     private Actor initialScrollTable() {
@@ -78,9 +80,8 @@ public class BreedsPanel {
     private TextProgressBar createProgressBar() {
         TextProgressBar progressBar = new TextProgressBar("Breed recognition",
                 0, Breed.size(), 1f, false, Textures.getUiSkin().get(ProgressBar.ProgressBarStyle.class), Textures.getUiSkin().get(Label.LabelStyle.class));
-//        progressBar.setAnimateDuration(2);
+        progressBar.setAnimateDuration(0);
         progressBar.setValue(0);
-        progressBar.setLabelName(new Label("Complete", Textures.getUiSkin()));
         return progressBar;
     }
 
@@ -107,12 +108,19 @@ public class BreedsPanel {
 
     public int i = 0;
     public void runAnimOfAnalysis(final ArrayList<Breed> breeds) {
-        animateOpen();
         progressBar = createProgressBar();
-        progressBar.setPosition(butW / 2, h*1.7f);
+        progressBar.setPosition(butW / 2, h*0.9f);
         progressBar.setWidth(w - butW);
         stage.addActor(progressBar);
 
+        for(int i=0; i < Breed.size(); i++) {
+            addBreedToScrollPanel(breeds.get(i));
+        }
+
+        iterateProgressBar(breeds);
+    }
+
+    private void iterateProgressBar(final ArrayList<Breed> breeds) {
         Timer.schedule(new Timer.Task(){
                            @Override
                            public void run() {
@@ -120,9 +128,10 @@ public class BreedsPanel {
                                if(i == breeds.size()) {
                                    progressBar.remove();
                                    this.cancel();
+                                   animateOpen();
+                                   buttonsPanel.animateOpen();
                                    return;
                                }
-                               addBreedToScrollPanel(breeds.get(i));
                                progressBar.setValue(i++);
                            }
                        }
@@ -140,9 +149,9 @@ public class BreedsPanel {
         scrollBreedsPanel.add(img).width(imgSize);
 
         Label percent = new Label("" + breed.getPercent() + "%", uiSkin);
-        if(breed.getPercent()==100) percent.setColor(Color.GREEN);
         if(breed.getPercent()>10) percent.setColor(Color.YELLOW);
         else percent.setColor(Color.MAROON);
+        if(breed.getPercent()==100) percent.setColor(Color.WHITE);
 //        percent.setFontScale(0.5f);
         scrollBreedsPanel.add(percent);
     }

@@ -65,7 +65,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 },
 
 ru.electronikas.dogsexpert.ui.ProgressBar$ProgressBarStyle: {
-	default: { background: greenpane, progress: magentapane },
+	default: { background: bluepane, progress: magentapane },
 },
 
 }

@@ -19,6 +19,7 @@ import ru.electronikas.dogsexpert.Textures;
 import ru.electronikas.dogsexpert.listeners.ImageChooseListener;
 import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 
+import static ru.electronikas.dogsexpert.Utils.maxScale;
 import static ru.electronikas.dogsexpert.Utils.textSizeTuning;
 
 /**
@@ -40,29 +41,32 @@ public class MainPanel {
         float w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
         butW = w / 8f;
+        float width = w - butW;
 
         uiSkin = Textures.getUiSkin();
         butsMenu = new Table(uiSkin);
         butsMenu.align(Align.topLeft);
         butsMenu.setPosition(butW / 2, h);
-        butsMenu.setWidth(w - butW);
+        butsMenu.setWidth(width);
         butsMenu.setHeight(h);
 //        breedsPanel.background("bluepane-t");
 
-        butsMenu.row().height(h / 10).width(w - butW);
+        butsMenu.row().height(h / 10).width(width);
         butsMenu.add(createHeader(w - butW));
 
-        butsMenu.row().height(h / 3).width(w - butW);
+        butsMenu.row().height(h / 3).width(width);
         butsMenu.add(createImage());
 
+        butsMenu.row().height(h / 10).padTop(h/40);
+        butsMenu.add(pictureButton(width)).width(width);
 
-        butsMenu.row().height(h / 10);
-        butsMenu.add(camShotButton(butW * 4f)).pad(10).width(butW * 4f);
+        butsMenu.row().height(h / 10).padTop(h/40);
+        butsMenu.add(camShotButton()).width(width);
 
-        butsMenu.row().height(h / 10);
-        butsMenu.add(pictureButton(butW * 4f)).pad(10).width(butW * 4f);
+        butsMenu.row().height(h / 10).padTop(h/40);
+        butsMenu.add(aboutButton()).width(width);
 
-//        breedsPanel.setDebug(true);
+//        butsMenu.setDebug(true);
 
         stage.addActor(butsMenu);
         breedsPanel = new BreedsPanel(stage);
@@ -79,11 +83,25 @@ public class MainPanel {
         return image;
     }
 
+
+    private TextButton aboutBut;
+    private Actor aboutButton() {
+        aboutBut = new TextButton(Assets.bdl().get("aboutBut"),
+                uiSkin.get("red-but", TextButton.TextButtonStyle.class));
+        aboutBut.getLabel().setFontScale(maxScale);
+        aboutBut.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+//                animateHide();
+            }
+        });
+        return aboutBut;
+    }
+
     TextButton camShotBut;
-    private Actor camShotButton(float width) {
+    private Actor camShotButton() {
         camShotBut = new TextButton(Assets.bdl().get("camShotBut"),
-                uiSkin.get("green-but", TextButton.TextButtonStyle.class));
-        textSizeTuning(camShotBut.getLabel(), width);
+                uiSkin);
+        camShotBut.getLabel().setFontScale(maxScale);
         camShotBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
 //                animateHide();
@@ -95,7 +113,7 @@ public class MainPanel {
     TextButton choosePhotoBut;
     private Actor pictureButton(float width) {
         choosePhotoBut = new TextButton(Assets.bdl().get("ChoosePhotoBut"),
-                uiSkin.get("green-but", TextButton.TextButtonStyle.class));
+                uiSkin);
         textSizeTuning(choosePhotoBut.getLabel(), width);
         choosePhotoBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -111,11 +129,15 @@ public class MainPanel {
             choosePhotoBut.setVisible(true);
             camShotBut.setDisabled(false);
             camShotBut.setVisible(true);
+            aboutBut.setDisabled(false);
+            aboutBut.setVisible(true);
         } else {
             choosePhotoBut.setDisabled(true);
             choosePhotoBut.setVisible(false);
             camShotBut.setDisabled(true);
             camShotBut.setVisible(false);
+            aboutBut.setDisabled(true);
+            aboutBut.setVisible(false);
         }
     }
 
