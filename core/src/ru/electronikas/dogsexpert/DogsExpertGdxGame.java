@@ -40,11 +40,15 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 		Assets.initLoading();
 	}
 
+	MainPanel mainPanel;
 	private void assetsOnLoad() {
 		processor = new NeuralProcessor();
-		new MainPanel(stage, processor).animateOpen();
+		mainPanel = new MainPanel(stage, processor);
+		mainPanel.animateOpen();
 	}
 
+
+	int i=0;
 	@Override
 	public void render () {
 		if(!assetsLoaded && Assets.getAssetMgr().update()) {
@@ -65,5 +69,9 @@ public class DogsExpertGdxGame extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 //		stage.dispose();
+	}
+
+	public void reset() {
+		mainPanel.reset();
 	}
 }

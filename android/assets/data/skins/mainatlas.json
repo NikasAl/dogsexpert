@@ -18,7 +18,8 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	inyan-t: { name: inyan, color: white-t }
 	greenpane-t: { name: greenpane, color: white-t }
 	settings-t: { name: settings, color: white-t }
-	close-t: { name: Button_Close, color: white-t }
+	close-t: { name: close, color: white-t }
+	help-t: { name: help, color: white-t }
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: { down: bluepane-t, up: bluepane, font: default-font, fontColor: white, downFontColor: white-t},
@@ -31,7 +32,8 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 	default: { down: bluepane-t, up: bluepane},
 	go-advice-but: { down: inyan-t, up: inyan},
 	settings-but: { down: settings-t, up: settings},
-	close-but: { down: close-t, up: Button_Close },
+	close-but: { down: close-t, up: close },
+	help-but: { down: help-t, up: help },
 },
 
 

@@ -76,7 +76,8 @@ public class AndroidLauncher extends AndroidApplication implements PlatformListe
 				Pixmap pixmap = new Pixmap(bitmap.getWidth(), bitmap.getHeight(), Pixmap.Format.RGBA8888);
 				pixmap.getPixels().asIntBuffer().put(pixels);
 
-				imageChooseListener.onChooseImage(pixmap);
+				if(imageChooseListener!=null)
+					imageChooseListener.onChooseImage(pixmap);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

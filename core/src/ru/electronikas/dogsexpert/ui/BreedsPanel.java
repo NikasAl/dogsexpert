@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
+import ru.electronikas.dogsexpert.Assets;
 import ru.electronikas.dogsexpert.Textures;
 import ru.electronikas.dogsexpert.Utils;
 import ru.electronikas.dogsexpert.neural.Breed;
@@ -30,6 +31,7 @@ public class BreedsPanel {
     float w = 0;
     float imgSize = 0;
     private Stage stage;
+    ScrollPane settigsScroll;
 
     public BreedsPanel(Stage stage) {
         this.stage = stage;
@@ -47,7 +49,7 @@ public class BreedsPanel {
         breedsPanel.setHeight(h);
 //        breedsPanel.background("bluepane-t");
 
-        ScrollPane settigsScroll = new ScrollPane(initialScrollTable(), uiSkin);
+        settigsScroll = new ScrollPane(initialScrollTable(), uiSkin);
 //        settigsScroll.setScale(0.95f);
         settigsScroll.setScrollingDisabled(true, false);
         breedsPanel.add(settigsScroll);
@@ -70,7 +72,7 @@ public class BreedsPanel {
         scrollBreedsPanel.setHeight(h);
 
         scrollBreedsPanel.row().height(h / 10).width(w - butW).pad(h/40);
-        Label header = new Label("Recognition Result:", uiSkin);
+        Label header = new Label(Assets.bdl().get("itReminds"), uiSkin);
         Utils.textSizeTuning(header, w - butW, 90);
         scrollBreedsPanel.add(header).left().colspan(2);
 
@@ -78,7 +80,7 @@ public class BreedsPanel {
     }
 
     private TextProgressBar createProgressBar() {
-        TextProgressBar progressBar = new TextProgressBar("Breed recognition",
+        TextProgressBar progressBar = new TextProgressBar(Assets.bdl().get("breedRecog"),
                 0, Breed.size(), 1f, false, Textures.getUiSkin().get(ProgressBar.ProgressBarStyle.class), Textures.getUiSkin().get(Label.LabelStyle.class));
         progressBar.setAnimateDuration(0);
         progressBar.setValue(0);
@@ -93,6 +95,8 @@ public class BreedsPanel {
 
 
     public void animateHide() {
+        buttonsPanel.animateHide();
+
         MoveToAction action = Actions.moveTo(butW / 2, -h);
         action.setDuration(0.5f);
         breedsPanel.addAction(action);
@@ -156,4 +160,10 @@ public class BreedsPanel {
         scrollBreedsPanel.add(percent);
     }
 
+    public void reset() {
+        scrollBreedsPanel.reset();
+        settigsScroll.clear();
+        settigsScroll.setWidget(initialScrollTable());
+        settigsScroll.setScrollingDisabled(true, false);
+    }
 }

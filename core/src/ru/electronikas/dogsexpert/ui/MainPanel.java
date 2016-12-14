@@ -176,4 +176,11 @@ public class MainPanel {
         butsMenu.addAction(action);
 
     }
+
+    public void reset() {
+        breedsPanel.animateHide();
+        breedsPanel.reset();
+
+        buttonsEnable(true);
+    }
 }
