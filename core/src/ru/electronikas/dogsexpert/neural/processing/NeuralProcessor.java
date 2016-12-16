@@ -10,13 +10,17 @@ import ru.electronikas.dogsexpert.neural.downsample.RGBDownsample;
 import ru.electronikas.dogsexpert.neural.image.PixmapMLData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by nikas on 11/27/16.
  */
 public class NeuralProcessor {
-    public static final int IM_SIZE = 50;
-    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
+    public static final int IM_SIZE = 15;
+//    public static final int IM_SIZE = 50;
+//    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
+    public static final String NETWORK = "data/theBestNet0_74pErr_15x15_1000-500-300-250_2d.eg";
 
     private Downsample downsample;
     private BasicNetwork network;
@@ -30,7 +34,7 @@ public class NeuralProcessor {
 
 //    NumberFormat nf = new DecimalFormat("0.000000#");
     public ArrayList<Breed> processWhatIs(Pixmap pixmap) {
-        ArrayList<Breed> breedTreeSet = new ArrayList<Breed>();
+        ArrayList<Breed> breedArrayList = new ArrayList<Breed>();
         final PixmapMLData input = new PixmapMLData(pixmap);
         int downsampleHeight = IM_SIZE;
         int downsampleWidth = IM_SIZE;
@@ -48,18 +52,19 @@ public class NeuralProcessor {
 //		}
 //		System.out.println();
         int count = 0;
-        int maxPercent = 0;
         while (count < outData.getData().length) {
             Breed breed = Breed.values()[count];
             breed.setResult(outData.getData(count));
             count++;
-            if(breed.getPercent() > maxPercent) {
-                breedTreeSet.add(0,breed);
-                maxPercent = breed.getPercent();
-            } else {
-                breedTreeSet.add(breed);
-            }
+            breedArrayList.add(breed);
         }
-        return breedTreeSet;
+
+        Collections.sort(breedArrayList, new Comparator<Breed>() {
+            @Override
+            public int compare(Breed breed1, Breed breed2) {
+                return breed2.getPercent() - breed1.getPercent();
+            }
+        });
+        return breedArrayList;
     }
 }

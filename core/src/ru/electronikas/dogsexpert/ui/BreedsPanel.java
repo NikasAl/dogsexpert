@@ -2,7 +2,6 @@ package ru.electronikas.dogsexpert.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -134,6 +133,7 @@ public class BreedsPanel {
                                    this.cancel();
                                    animateOpen();
                                    buttonsPanel.animateOpen();
+                                   i=0;
                                    return;
                                }
                                progressBar.setValue(i++);
@@ -149,7 +149,7 @@ public class BreedsPanel {
     private void addBreedToScrollPanel(Breed breed) {
 
         scrollBreedsPanel.row().height(imgSize).width(w - butW).pad(h/40);
-        Image img = new Image(new Texture(breed.getImagePath()));
+        Image img = Assets.getBreedImage(breed.getImagePath());
         scrollBreedsPanel.add(img).width(imgSize);
 
         Label percent = new Label("" + breed.getPercent() + "%", uiSkin);
@@ -161,8 +161,8 @@ public class BreedsPanel {
     }
 
     public void reset() {
-        scrollBreedsPanel.reset();
-        settigsScroll.clear();
+//        scrollBreedsPanel.reset();
+        settigsScroll.clearChildren();
         settigsScroll.setWidget(initialScrollTable());
         settigsScroll.setScrollingDisabled(true, false);
     }

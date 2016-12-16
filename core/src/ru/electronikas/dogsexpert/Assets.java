@@ -4,12 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.I18NBundle;
 import org.encog.neural.networks.BasicNetwork;
 import ru.electronikas.dogsexpert.neural.processing.NeuralNetLoader;
 import ru.electronikas.dogsexpert.neural.processing.NeuralProcessor;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * User: navdonin
@@ -56,4 +60,15 @@ public class Assets {
         getAssetMgr().load(NeuralProcessor.NETWORK, BasicNetwork.class);
     }
 
+
+    private static Map<String,Image> breedImages = new HashMap<String, Image>();
+    public static Image getBreedImage(String imagePath) {
+        Image img = breedImages.get(imagePath);
+        if(img==null) {
+            Image nimg = new Image(new Texture(imagePath));
+            breedImages.put(imagePath, nimg);
+            img = nimg;
+        }
+        return img;
+    }
 }
