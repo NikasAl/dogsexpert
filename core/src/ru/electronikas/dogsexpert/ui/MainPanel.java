@@ -104,7 +104,7 @@ public class MainPanel {
         camShotBut.getLabel().setFontScale(maxScale);
         camShotBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-//                animateHide();
+                DogsExpertGdxGame.game.platformListener.getCameraSnapshot(imgChooseListener);
             }
         });
         return camShotBut;
