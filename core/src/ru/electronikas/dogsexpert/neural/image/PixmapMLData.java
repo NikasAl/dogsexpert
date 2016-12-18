@@ -98,6 +98,7 @@ public class PixmapMLData extends BasicMLData {
 
 		this.setData(sample);
 		image.dispose();
+		image = null;
 	}
 
 	/**

@@ -33,8 +33,16 @@ then
 fi
 
 
-    while getopts "r:jg:csm" opt; do
+    while getopts "r:jg:csmd:" opt; do
         case $opt in
+        d)
+            echo "Download "
+#            local_test_run_cmd $OPTARG
+            local_test_run_cmd ./ImgUrlsFromImageNet_pitbul.txt
+            local_test_run_cmd ./ImgUrlsFromImageNet_pudel.txt
+            local_test_run_cmd ./ImgUrlsFromImageNet_senbernar.txt
+            local_test_run_cmd ./ImgUrlsFromImageNet_taksa.txt
+            ;;
         c)
             echo "Compile..."
             cd ..

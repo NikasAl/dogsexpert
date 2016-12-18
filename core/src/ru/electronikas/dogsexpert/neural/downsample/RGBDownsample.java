@@ -109,6 +109,7 @@ public class RGBDownsample implements Downsample {
 		final double[] result = new double[height * width * 3];
 		int[] array = getPixelsFromPixmap(image);
 		this.pixelMap = array;
+		image.dispose();
 
 //		PixmapImageWriter.saveTestPixmapToPNG(array, image.getWidth(), image.getHeight());
 
