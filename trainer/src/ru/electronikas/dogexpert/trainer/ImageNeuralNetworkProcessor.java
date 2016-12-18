@@ -23,6 +23,7 @@
  */
 package ru.electronikas.dogexpert.trainer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -188,6 +189,7 @@ public class ImageNeuralNetworkProcessor {
 	private void processNetwork() throws IOException {
 		System.out.println("Downsampling images...");
 
+		int ii=0;
 		for (final ImagePair pair : this.imageList) {
 			final MLData ideal = new BasicMLData(this.outputCount);
 			final int idx = pair.getIdentity();
@@ -202,12 +204,21 @@ public class ImageNeuralNetworkProcessor {
 //			final Image img = ImageIO.read(pair.getFile());
 			Pixmap pixmap = getPixmapFromImageFile(pair.getFile().getPath());
 			final PixmapMLData data = new PixmapMLData(pixmap);
+
+			data.downsample(downsample, false, downsampleHeight, downsampleWidth,
+					1, -1);
+			pixmap = null;
 			this.training.add(data, ideal);
+
+			ii++;
+			if(ii % 500 == 0)
+				Gdx.app.log("downsampling", ""+ii+" item");
+
 		}
 
 		final String[] strHiddens = getArg("hiddens").split(" ");
 
-		this.training.downsample(this.downsampleHeight, this.downsampleWidth);
+//		this.training.downsample(this.downsampleHeight, this.downsampleWidth);
 
 		List<Integer> hiddens = new ArrayList<>();
 
@@ -227,7 +238,10 @@ public class ImageNeuralNetworkProcessor {
 		if (!texture.getTextureData().isPrepared()) {
 			texture.getTextureData().prepare();
 		}
-		return texture.getTextureData().consumePixmap();
+		Pixmap pixmp = texture.getTextureData().consumePixmap();
+		texture.dispose();
+		texture = null;
+		return pixmp;
 	}
 
 	public static BasicNetwork simpleFeedForward(final int input,
