@@ -87,7 +87,7 @@ public class MainPanel {
     private TextButton aboutBut;
     private Actor aboutButton() {
         aboutBut = new TextButton(Assets.bdl().get("aboutBut"),
-                uiSkin.get("red-but", TextButton.TextButtonStyle.class));
+                uiSkin.get("orange-but", TextButton.TextButtonStyle.class));
         aboutBut.getLabel().setFontScale(maxScale);
         aboutBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -126,18 +126,18 @@ public class MainPanel {
     private void buttonsEnable(boolean isEnabled) {
         if(isEnabled) {
             choosePhotoBut.setDisabled(false);
-            choosePhotoBut.setVisible(true);
+            choosePhotoBut.addAction(Actions.fadeIn(1f));
             camShotBut.setDisabled(false);
-            camShotBut.setVisible(true);
+            camShotBut.addAction(Actions.fadeIn(1f));
             aboutBut.setDisabled(false);
-            aboutBut.setVisible(true);
+            aboutBut.addAction(Actions.fadeIn(1f));
         } else {
             choosePhotoBut.setDisabled(true);
-            choosePhotoBut.setVisible(false);
+            choosePhotoBut.addAction(Actions.fadeOut(0.1f));
             camShotBut.setDisabled(true);
-            camShotBut.setVisible(false);
+            camShotBut.addAction(Actions.fadeOut(0.5f));
             aboutBut.setDisabled(true);
-            aboutBut.setVisible(false);
+            aboutBut.addAction(Actions.fadeOut(1f));
         }
     }
 
