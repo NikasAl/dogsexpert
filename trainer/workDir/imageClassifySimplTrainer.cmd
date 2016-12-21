@@ -78,9 +78,9 @@ Input: identity:skotch-terer
 Input: identity:erdelterer
 Input: identity:yaponskij-xin
 Input: identity:english-springer-spaniel
-LoadNet: file: ./theBestNet0_74pErr_25x25-1000-500-250-100-80_21h.eg
-LoadTrainData: file: ./dogs.egb
-Train: Mode:guic, Minutes:1, StrategyError:0.5, StrategyCycles:150
+LoadNet: file: ./theBestNet2_4pErr_25x25_800-500-250-150-90_3d.eg
+LoadTrainData: file: ./dogs_25x25x3_79_14388.egb
+Train: Mode:guic, Minutes:10, StrategyError:0.5, StrategyCycles:150
 Whatis: image:./alyaskinskij-malamut/7.jpg
 Whatis: image:./alyaskinskij-malamut/6.jpg
 Whatis: image:./alyaskinskij-malamut/5.jpg

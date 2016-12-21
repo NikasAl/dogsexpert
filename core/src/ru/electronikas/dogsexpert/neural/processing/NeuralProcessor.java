@@ -17,12 +17,12 @@ import java.util.Comparator;
  * Created by nikas on 11/27/16.
  */
 public class NeuralProcessor {
-    public static final int IM_SIZE = 10;
+//    public static final int IM_SIZE = 10;
 //    public static final int IM_SIZE = 15;
-//    public static final int IM_SIZE = 50;
-//    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
+    public static final int IM_SIZE = 50;
+    public static final String NETWORK = "data/theBestNet0_73pErr_50x50_250-150-150-150-100_2d.eg";
 //    public static final String NETWORK = "data/theBestNet0_66pErr_15x15_700-600-500-400-300-200-100_2d.eg";
-    public static final String NETWORK = "data/theBestNet2_4pErr_10x10_250-150-100-80_5h.eg";
+//    public static final String NETWORK = "data/theBestNet2_4pErr_10x10_250-150-100-80_5h.eg.zip";
 
     private Downsample downsample;
     private BasicNetwork network;
