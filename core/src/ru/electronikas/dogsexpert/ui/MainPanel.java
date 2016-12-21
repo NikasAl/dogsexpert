@@ -34,6 +34,7 @@ public class MainPanel {
     private NeuralProcessor processor;
 
     private BreedsPanel breedsPanel;
+    private AboutPanel aboutPanel;
 
     public MainPanel(Stage stage, NeuralProcessor processor) {
         this.stage = stage;
@@ -49,7 +50,7 @@ public class MainPanel {
         butsMenu.setPosition(butW / 2, h);
         butsMenu.setWidth(width);
         butsMenu.setHeight(h);
-//        breedsPanel.background("bluepane-t");
+//        aboutPanel.background("bluepane-t");
 
         butsMenu.row().height(h / 10).width(width);
         butsMenu.add(createHeader(w - butW));
@@ -70,6 +71,7 @@ public class MainPanel {
 
         stage.addActor(butsMenu);
         breedsPanel = new BreedsPanel(stage);
+        aboutPanel = new AboutPanel(stage);
     }
 
     Image image;
@@ -91,7 +93,7 @@ public class MainPanel {
         aboutBut.getLabel().setFontScale(maxScale);
         aboutBut.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-//                animateHide();
+                aboutPanel.animateOpen();
             }
         });
         return aboutBut;

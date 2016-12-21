@@ -14984,7 +14984,7 @@ Input: image:./english-springer-spaniel/1008.jpg, identity:english-springer-span
 Input: image:./english-springer-spaniel/1009.jpg, identity:english-springer-spaniel
 Network: hiddens:250 150 100 80
 SaveTrainData: file: ./dogs.egb
-#SaveNet: file:./dogs.eg
+SaveNet: file:./dogs.eg
 Train: Mode:gui, Minutes:1, StrategyError:0.5, StrategyCycles:150
 Whatis: image:./alyaskinskij-malamut/7.jpg
 Whatis: image:./alyaskinskij-malamut/6.jpg

@@ -46,17 +46,17 @@ public class BreedsPanel {
         breedsPanel.setPosition(butW / 2, -h);
         breedsPanel.setWidth(w - butW);
         breedsPanel.setHeight(h);
-//        breedsPanel.background("bluepane-t");
+//        aboutPanel.background("bluepane-t");
 
         settigsScroll = new ScrollPane(initialScrollTable(), uiSkin);
-//        settigsScroll.setScale(0.95f);
+//        scroll.setScale(0.95f);
         settigsScroll.setScrollingDisabled(true, false);
         breedsPanel.add(settigsScroll);
 
-//        breedsPanel.row().height(h).width(w - butW);
-//        breedsPanel.add();
+//        aboutPanel.row().height(h).width(w - butW);
+//        aboutPanel.add();
 
-//        breedsPanel.setDebug(true);
+//        aboutPanel.setDebug(true);
 
         stage.addActor(breedsPanel);
 
@@ -161,7 +161,7 @@ public class BreedsPanel {
     }
 
     public void reset() {
-//        scrollBreedsPanel.reset();
+//        scrollAboutPanel.reset();
         settigsScroll.clearChildren();
         settigsScroll.setWidget(initialScrollTable());
         settigsScroll.setScrollingDisabled(true, false);

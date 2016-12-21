@@ -11,6 +11,7 @@ usage_getopt() {
      Options:
      -c : Recompile trainer
      -s : Get dog identity mapping
+     -k : Console mode
 
      For example:
         ./runner.sh -r imageClassifySimplTrainer.cmd -c
@@ -19,9 +20,16 @@ usage_getopt() {
      "
 }
 
+CM=false
+
 local_test_run_cmd() {
     cmd_script=$1
-    java -jar ../build/libs/trainer.jar "./$cmd_script"
+    if [ "$CM" = false ]
+    then
+        java -jar ../build/libs/trainer.jar "./$cmd_script"
+    else
+        java -cp ../build/libs/trainer.jar ru.electronikas.dogexpert.trainer.ConsoleTrainer "./$cmd_script"
+    fi
 }
 
 
@@ -33,7 +41,7 @@ then
 fi
 
 
-    while getopts "r:jg:csmd:" opt; do
+    while getopts "r:jg:csmd:k" opt; do
         case $opt in
         d)
             echo "Download "
@@ -66,6 +74,10 @@ fi
                 PROGRAM_NAME=$OPTARG;
                 local_test_run_cmd $PROGRAM_NAME
             fi
+            ;;
+        k)
+            echo "Console Mode Activated"
+            CM=true
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
